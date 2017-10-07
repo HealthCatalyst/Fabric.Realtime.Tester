@@ -1,0 +1,1 @@
+# Fabric.Realtime.RabbitMq.Tester
