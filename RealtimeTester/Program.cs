@@ -12,6 +12,7 @@ namespace RealtimeTester
 {
     public class TestSSL
     {
+
         public static int Main(string[] args)
         {
             string rabbitmqhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
@@ -28,6 +29,15 @@ namespace RealtimeTester
                 // set the hostname and the port
                 cf.HostName = rabbitmqhostname;
                 cf.Port = AmqpTcpEndpoint.DefaultAmqpSslPort;
+
+                cf.Ssl = new SslOption
+                {
+                    Enabled = true,
+                    //ServerName = rabbitmqhostname,
+                    CertificateValidationCallback = MyValidateServerCertificate,
+                    //AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
+                    //                         SslPolicyErrors.RemoteCertificateChainErrors,
+                };
 
                 // I've imported my certificate into my certificate store 
                 // (the Personal/Certificates folder in the certmgr mmc snap-in)
@@ -103,5 +113,70 @@ namespace RealtimeTester
             }
             return 0;
         }
+
+        /// <summary>
+        /// from https://msdn.microsoft.com/en-us/library/system.net.security.remotecertificatevalidationcallback(v=vs.110).aspx
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="certificate"></param>
+        /// <param name="chain"></param>
+        /// <param name="sslPolicyErrors"></param>
+        /// <returns></returns>
+        public static bool MyValidateServerCertificate(
+            object sender,
+            X509Certificate certificate,
+            X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
+        {
+            if (sslPolicyErrors == SslPolicyErrors.None)
+                return true;
+
+            // allow the CA to not be present
+            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+                return true;
+
+            Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
+
+            // Do not allow this client to communicate with unauthenticated servers.
+            return false;
+        }
+
+        /// <summary>
+        /// from https://msdn.microsoft.com/en-us/library/system.net.security.localcertificateselectioncallback(v=vs.110).aspx
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="targetHost"></param>
+        /// <param name="localCertificates"></param>
+        /// <param name="remoteCertificate"></param>
+        /// <param name="acceptableIssuers"></param>
+        /// <returns></returns>
+        public static X509Certificate SelectLocalCertificate(
+            object sender,
+            string targetHost,
+            X509CertificateCollection localCertificates,
+            X509Certificate remoteCertificate,
+            string[] acceptableIssuers)
+        {
+            Console.WriteLine("Client is selecting a local certificate.");
+            if (acceptableIssuers != null &&
+                acceptableIssuers.Length > 0 &&
+                localCertificates != null &&
+                localCertificates.Count > 0)
+            {
+                // Use the first certificate that is from an acceptable issuer.
+                foreach (X509Certificate certificate in localCertificates)
+                {
+                    string issuer = certificate.Issuer;
+                    if (Array.IndexOf(acceptableIssuers, issuer) != -1)
+                        return certificate;
+                }
+            }
+            if (localCertificates != null &&
+                localCertificates.Count > 0)
+                return localCertificates[0];
+
+            return null;
+        }
+
     }
 }
