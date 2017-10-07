@@ -1,0 +1,107 @@
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
+using RabbitMQ.Util;
+
+namespace RealtimeTester
+{
+    public class TestSSL
+    {
+        public static int Main(string[] args)
+        {
+            string rabbitmqhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
+            string path_to_certificate_file = "/path/to/client/keycert.p12";
+            string password = "MySecretPassword";
+
+            try
+            {
+                // from http://blog.johnruiz.com/2011/12/establishing-ssl-connection-to-rabbitmq.html
+
+                // we use the rabbit connection factory, just like normal
+                ConnectionFactory cf = new ConnectionFactory();
+
+                // set the hostname and the port
+                cf.HostName = rabbitmqhostname;
+                cf.Port = AmqpTcpEndpoint.DefaultAmqpSslPort;
+
+                // I've imported my certificate into my certificate store 
+                // (the Personal/Certificates folder in the certmgr mmc snap-in)
+                // Let's open that store right now.
+                X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+                store.Open(OpenFlags.ReadOnly);
+
+                foreach (X509Certificate2 certificate2 in store.Certificates)
+                {
+                    Debug.WriteLine("Expire:"+ certificate2.GetExpirationDateString());
+                    Debug.WriteLine($"Issuer:[{certificate2.Issuer}]");
+                    Debug.WriteLine("Effective:"+certificate2.GetEffectiveDateString());
+                    Debug.WriteLine("SimpleName:"+certificate2.GetNameInfo(X509NameType.SimpleName, true));
+                    Debug.WriteLine("HasPrivateKey:"+certificate2.HasPrivateKey);
+                    Debug.WriteLine("SubjectName:"+certificate2.SubjectName.Name);
+                    Debug.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
+                    Debug.WriteLine("-----------------------------------");
+                }
+
+                // and find my certificate by its thumbprint.
+                var x509Certificate2Collection = store.Certificates
+                    .Find(
+                        X509FindType.FindByIssuerName,
+                        "FabricRabbitMqCA",
+                        false
+                    );
+
+                X509Certificate cert = x509Certificate2Collection
+                    .OfType<X509Certificate>()
+                    .First();
+
+                // now, let's set the connection factory's ssl-specific settings
+                // NOTE: it's absolutely required that what you set as Ssl.ServerName be
+                //       what's on your rabbitmq server's certificate (its CN - common name)
+                cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
+                cf.Ssl.ServerName = rabbitmqhostname;
+                cf.Ssl.Enabled = true;
+
+                using (IConnection conn = cf.CreateConnection())
+                {
+                    using (IModel ch = conn.CreateModel())
+                    {
+                        ch.QueueDeclare("rabbitmq-dotnet-test", false, false, false, null);
+                        ch.BasicPublish("", "rabbitmq-dotnet-test", null,
+                            Encoding.UTF8.GetBytes("Hello, World"));
+                        BasicGetResult result = ch.BasicGet("rabbitmq-dotnet-test", true);
+                        if (result == null)
+                        {
+                            Console.WriteLine("No message received.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Received:");
+                            DebugUtil.DumpProperties(result, Console.Out, 0);
+                        }
+                        ch.QueueDelete("rabbitmq-dotnet-test");
+                    }
+                }
+            }
+            catch (BrokerUnreachableException bex)
+            {
+                Exception ex = bex;
+                while (ex != null)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("inner:");
+                    ex = ex.InnerException;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return 0;
+        }
+    }
+}
