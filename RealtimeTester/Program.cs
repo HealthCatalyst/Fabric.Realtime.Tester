@@ -22,6 +22,8 @@ namespace RealtimeTester
             try
             {
                 // from http://blog.johnruiz.com/2011/12/establishing-ssl-connection-to-rabbitmq.html
+                // and https://www.rabbitmq.com/ssl.html
+                // and https://weblogs.asp.net/jeffreyabecker/Using-SSL-client-certificates-for-authentication-with-RabbitMQ
 
                 // we use the rabbit connection factory, just like normal
                 ConnectionFactory cf = new ConnectionFactory();
@@ -29,15 +31,8 @@ namespace RealtimeTester
                 // set the hostname and the port
                 cf.HostName = rabbitmqhostname;
                 cf.Port = AmqpTcpEndpoint.DefaultAmqpSslPort;
+                cf.AuthMechanisms = new AuthMechanismFactory[] { new ExternalMechanismFactory() };
 
-                cf.Ssl = new SslOption
-                {
-                    Enabled = true,
-                    //ServerName = rabbitmqhostname,
-                    CertificateValidationCallback = MyValidateServerCertificate,
-                    //AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
-                    //                         SslPolicyErrors.RemoteCertificateChainErrors,
-                };
 
                 // I've imported my certificate into my certificate store 
                 // (the Personal/Certificates folder in the certmgr mmc snap-in)
@@ -47,12 +42,12 @@ namespace RealtimeTester
 
                 foreach (X509Certificate2 certificate2 in store.Certificates)
                 {
-                    Debug.WriteLine("Expire:"+ certificate2.GetExpirationDateString());
+                    Debug.WriteLine("Expire:" + certificate2.GetExpirationDateString());
                     Debug.WriteLine($"Issuer:[{certificate2.Issuer}]");
-                    Debug.WriteLine("Effective:"+certificate2.GetEffectiveDateString());
-                    Debug.WriteLine("SimpleName:"+certificate2.GetNameInfo(X509NameType.SimpleName, true));
-                    Debug.WriteLine("HasPrivateKey:"+certificate2.HasPrivateKey);
-                    Debug.WriteLine("SubjectName:"+certificate2.SubjectName.Name);
+                    Debug.WriteLine("Effective:" + certificate2.GetEffectiveDateString());
+                    Debug.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
+                    Debug.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
+                    Debug.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
                     Debug.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
                     Debug.WriteLine("-----------------------------------");
                 }
@@ -72,9 +67,17 @@ namespace RealtimeTester
                 // now, let's set the connection factory's ssl-specific settings
                 // NOTE: it's absolutely required that what you set as Ssl.ServerName be
                 //       what's on your rabbitmq server's certificate (its CN - common name)
-                cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
-                cf.Ssl.ServerName = rabbitmqhostname;
-                cf.Ssl.Enabled = true;
+
+
+                cf.Ssl = new SslOption
+                {
+                    Enabled = true,
+                    ServerName = rabbitmqhostname,
+                    CertificateValidationCallback = MyValidateServerCertificate,
+                    //AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
+                    //                         SslPolicyErrors.RemoteCertificateChainErrors,
+                    Certs = new X509CertificateCollection(new X509Certificate[] { cert }),
+                };
 
                 using (IConnection conn = cf.CreateConnection())
                 {
