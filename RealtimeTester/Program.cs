@@ -60,6 +60,12 @@ namespace RealtimeTester
                         false
                     );
 
+                if (!x509Certificate2Collection
+                    .OfType<X509Certificate>().Any())
+                {
+                    throw new Exception("No client certificate found on this machine with IssuerName=FabricRabbitMqCA");
+                }
+
                 X509Certificate cert = x509Certificate2Collection
                     .OfType<X509Certificate>()
                     .First();
