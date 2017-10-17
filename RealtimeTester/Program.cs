@@ -70,9 +70,22 @@ namespace RealtimeTester
                     .OfType<X509Certificate>()
                     .First();
 
+                // check that we can access the private key with the user this application is running under
+                try
+                {
+                    var key = ((X509Certificate2) cert).PrivateKey;
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(
+                        "Cannot access private key for the certificate.  Make sure the user account of this application has access to private key for the client certificate with IssuerName=FabricRabbitMqCA.  https://docs.secureauth.com/display/KBA/Grant+Permission+to+Use+Signing+Certificate+Private+Key");
+                }
+
                 // now, let's set the connection factory's ssl-specific settings
                 // NOTE: it's absolutely required that what you set as Ssl.ServerName be
                 //       what's on your rabbitmq server's certificate (its CN - common name)
+
 
 
                 cf.Ssl = new SslOption
