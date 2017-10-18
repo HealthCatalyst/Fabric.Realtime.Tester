@@ -1,2 +1,23 @@
 # Visual Studio 2015 cache/options directory
 .vs/
+
+# .NET Specific Folders #
+#########################
+[Oo]bj
+[Oo]bj/*
+[Bb]in
+[Bb]in/*
+deploy
+deploy/*
+_ReSharper.*
+*.csproj.user
+*.Resharper.user
+*.resharper
+*.suo
+*.cache
+~$*
+*.licx
+*/obj
+RealtimeTester/bin/*
+RealtimeTester/obj/*
+

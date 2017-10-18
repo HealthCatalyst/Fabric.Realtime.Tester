@@ -9,36 +9,41 @@ namespace RealtimeTester
 {
     class RabbitMqListener
     {
-        private const string ExchangeName = "fabric.interfaceengine";
-        private const string ExchangeType = "direct";
+        private const string ExchangeName = "fabric.realtime.hl7";
+        private const string ExchangeType = "topic";
 
-        private const string routingKey = "mirth.connect.inbound";
+        private const string routingKey = "#";
 
         public void SetupExchange(string hostname)
         {
-            var factory = new ConnectionFactory {HostName = hostname};
+            var factory = RabbitMqConnectionFactory.GetConnectionFactory(hostname);
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType);
-
+                channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType, durable: true);
             }
+
         }
 
-        public string GetMessage(string hostname, CancellationToken token, AutoResetEvent waitHandle)
+        public string GetMessage(string hostname, CancellationToken token, AutoResetEvent messageReceivedWaitHandle, AutoResetEvent channelCreatedWaitHandle)
         {
             var factory = RabbitMqConnectionFactory.GetConnectionFactory(hostname);
 
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType);
+                channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType, durable: true);
                 var queueName = channel.QueueDeclare().QueueName;
 
                 channel.QueueBind(queue: queueName, exchange: ExchangeName, routingKey: routingKey);
 
+                channelCreatedWaitHandle.Set();
+
                 var consumer = new EventingBasicConsumer(channel);
                 string myMessage = null;
+
+                Console.WriteLine(
+                    $"Listening for messages on host:{hostname} for queue:{queueName}, exchange:{ExchangeName} with routing key:{routingKey}");
 
                 consumer.Received += (model, ea) =>
                 {
@@ -47,7 +52,7 @@ namespace RealtimeTester
                     var routingKey = ea.RoutingKey;
                     myMessage = message;
                     Console.WriteLine($"Received {routingKey}: {message}");
-                    waitHandle.Set();
+                    messageReceivedWaitHandle.Set();
                 };
                 var basicConsume = channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 

@@ -11,7 +11,7 @@ namespace RealtimeTester
     public class MirthTester
     {
 
-        public void TestSendingHL7(string mirthhostname)
+        public static void TestSendingHL7(string mirthhostname)
         {
             // from http://www.mieweb.com/wiki/Sample_HL7_Messages#ADT.5EA01
             var message =
@@ -28,15 +28,24 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
-            var waitHandle = new AutoResetEvent(false);
+            var messageReceivedWaitHandle = new AutoResetEvent(false);
+            var channelCreatedWaitHandle = new AutoResetEvent(false);
 
-            var task = Task.Run(() => rabbitMqListener.GetMessage(mirthhostname, token, waitHandle), token);
+            var task = Task.Run(() => rabbitMqListener.GetMessage(mirthhostname, token, messageReceivedWaitHandle, channelCreatedWaitHandle), token);
+
+            // wait until the channel/queue has been created otherwise any message we sent will not get to the queue
+            channelCreatedWaitHandle.WaitOne();
 
             var result = SendHL7(mirthhostname, 6661, message);
 
-            waitHandle.WaitOne();
+            // wait until the message has been received
+            messageReceivedWaitHandle.WaitOne();
 
+            // tell the other thread to end
             tokenSource.Cancel();
+
+            // wait for other thread to end
+            // ReSharper disable once MethodSupportsCancellation
             task.Wait();
 
             var r = task.Result;
@@ -60,6 +69,8 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 // If the socket could not get a connection, then return false.
                 if (s == null)
                     throw new Exception("Could not connect to Mirth");
+
+                Console.WriteLine($"Sending HL7 message to {server}");
 
                 // Send message to the server.
                 s.Send(bytesSent, bytesSent.Length, 0);

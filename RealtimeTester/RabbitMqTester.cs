@@ -45,7 +45,7 @@ namespace RealtimeTester
                 Exception ex = bex;
                 while (ex != null)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.ToString());
                     Console.WriteLine("inner:");
                     ex = ex.InnerException;
                 }
