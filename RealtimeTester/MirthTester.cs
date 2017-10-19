@@ -68,6 +68,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 if (s == null)
                     throw new Exception("Could not connect to Mirth");
 
+                Console.WriteLine("---------------------------------");
                 Console.WriteLine($"Sending HL7 message to {server}");
 
                 // Send message to the server.
