@@ -23,8 +23,6 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             // set up the queue first
             var rabbitMqListener = new RabbitMqListener();
 
-            rabbitMqListener.SetupExchange(mirthhostname);
-
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 

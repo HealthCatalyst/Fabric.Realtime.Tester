@@ -14,17 +14,6 @@ namespace RealtimeTester
 
         private const string routingKey = "#";
 
-        public void SetupExchange(string hostname)
-        {
-            var factory = RabbitMqConnectionFactory.GetConnectionFactory(hostname);
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType, durable: true);
-            }
-
-        }
-
         public string GetMessage(string hostname, CancellationToken token, AutoResetEvent messageReceivedWaitHandle, AutoResetEvent channelCreatedWaitHandle)
         {
             var factory = RabbitMqConnectionFactory.GetConnectionFactory(hostname);
