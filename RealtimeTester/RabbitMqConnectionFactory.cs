@@ -48,14 +48,14 @@ namespace RealtimeTester
             var x509Certificate2Collection = store.Certificates
                 .Find(
                     X509FindType.FindByIssuerName,
-                    "FabricRabbitMqCA",
+                    "FabricCertificateAuthority",
                     false
                 );
 
             if (!x509Certificate2Collection
                 .OfType<X509Certificate>().Any())
             {
-                throw new Exception("No client certificate found on this machine with IssuerName=FabricRabbitMqCA");
+                throw new Exception("No client certificate found on this machine with IssuerName=FabricCertificateAuthority");
             }
 
             X509Certificate cert = x509Certificate2Collection
@@ -71,7 +71,7 @@ namespace RealtimeTester
             catch (Exception ex)
             {
                 throw new Exception(
-                    "Cannot access private key for the certificate.  Make sure the user account of this application has access to private key for the client certificate with IssuerName=FabricRabbitMqCA.  https://docs.secureauth.com/display/KBA/Grant+Permission+to+Use+Signing+Certificate+Private+Key");
+                    "Cannot access private key for the certificate.  Make sure the user account of this application has access to private key for the client certificate with IssuerName=FabricCertificateAuthority.  https://docs.secureauth.com/display/KBA/Grant+Permission+to+Use+Signing+Certificate+Private+Key");
             }
 
             // now, let's set the connection factory's ssl-specific settings
@@ -87,7 +87,11 @@ namespace RealtimeTester
                 //AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
                 //                         SslPolicyErrors.RemoteCertificateChainErrors,
                 Certs = new X509CertificateCollection(new X509Certificate[] { cert }),
+                
             };
+
+            cf.SocketReadTimeout = 1000 * 30;
+            cf.SocketWriteTimeout = 1000 * 30;
             return cf;
         }
 

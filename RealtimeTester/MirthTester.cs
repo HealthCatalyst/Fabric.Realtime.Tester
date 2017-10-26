@@ -94,8 +94,9 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                     throw new Exception($"Got invalid response from Mirth:[{page}]");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 throw;
             }
         }
