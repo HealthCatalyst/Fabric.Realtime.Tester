@@ -77,7 +77,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 // Receive the response back
                 int bytes = 0;
 
-                s.ReceiveTimeout = 3000;
+                s.ReceiveTimeout = 30 * 1000;
                 bytes = s.Receive(bytesReceived, bytesReceived.Length, 0);
                 string page = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
                 s.Close();
