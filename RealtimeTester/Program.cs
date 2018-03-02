@@ -29,6 +29,14 @@ namespace RealtimeTester
 
             MirthTester.TestSendingHL7(mirthhostname);
 
+            var rabbitMqListener = new RabbitMqListener();
+
+            rabbitMqListener.StartListening(mirthhostname);
+
+            Console.WriteLine("Press Enter to exit");
+
+            Console.ReadLine();
+
             return 0;
         }
 
