@@ -444,7 +444,7 @@
           }
         }
       },
-      "Serilog/2.5.0": {
+      "Serilog/2.6.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.0.1",
@@ -467,7 +467,7 @@
           "lib/netstandard1.3/Serilog.dll": {}
         }
       },
-      "Serilog.Sinks.Console/3.1.0": {
+      "Serilog.Sinks.Console/3.1.1": {
         "type": "package",
         "dependencies": {
           "Serilog": "2.5.0",
@@ -2218,10 +2218,10 @@
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
       ]
     },
-    "Serilog/2.5.0": {
-      "sha512": "JwwkgNYNFKT4kQZ3qBV3VqPgchUg1A6FnlFa9hgyanylwBhJ7eTFl3pgLVxijFEb+oHLImRcMaTsMzBt2AG0aQ==",
+    "Serilog/2.6.0": {
+      "sha512": "hxHgHkza8ZowrvQ+jTEF2ypDWGP8NbNtxPQIx7ogTAM9fisDFo2+6kOaxCkleZLO8hiyq0kW5tDLkgm/dbj9uA==",
       "type": "package",
-      "path": "serilog/2.5.0",
+      "path": "serilog/2.6.0",
       "files": [
         "lib/net45/Serilog.dll",
         "lib/net45/Serilog.xml",
@@ -2231,14 +2231,14 @@
         "lib/netstandard1.0/Serilog.xml",
         "lib/netstandard1.3/Serilog.dll",
         "lib/netstandard1.3/Serilog.xml",
-        "serilog.2.5.0.nupkg.sha512",
+        "serilog.2.6.0.nupkg.sha512",
         "serilog.nuspec"
       ]
     },
-    "Serilog.Sinks.Console/3.1.0": {
-      "sha512": "n3AuhND1fDN4u0h80xVIh9brWAo55l0dHnIFGVpdL8uH73tYiWmvst2rFpsEw8WialNirtyR4Ku+hnnfnJwnhQ==",
+    "Serilog.Sinks.Console/3.1.1": {
+      "sha512": "56mI5AqvyF/i/c2451nvV71kq370XOCE4Uu5qiaJ295sOhMb9q3BWwG7mWLOVSnmpWiq0SBT3SXfgRXGNP6vzA==",
       "type": "package",
-      "path": "serilog.sinks.console/3.1.0",
+      "path": "serilog.sinks.console/3.1.1",
       "files": [
         "lib/net45/Serilog.Sinks.Console.dll",
         "lib/net45/Serilog.Sinks.Console.xml",
@@ -2246,7 +2246,7 @@
         "lib/netcoreapp1.1/Serilog.Sinks.Console.xml",
         "lib/netstandard1.3/Serilog.Sinks.Console.dll",
         "lib/netstandard1.3/Serilog.Sinks.Console.xml",
-        "serilog.sinks.console.3.1.0.nupkg.sha512",
+        "serilog.sinks.console.3.1.1.nupkg.sha512",
         "serilog.sinks.console.nuspec"
       ]
     },
@@ -4920,8 +4920,8 @@
       "RabbitMQ.Client >= 5.0.1",
       "Realtime.Tester.Mirth >= 1.0.0",
       "Realtime.Tester.RabbitMq >= 1.0.0",
-      "Serilog >= 2.5.0",
-      "Serilog.Sinks.Console >= 3.1.0"
+      "Serilog >= 2.6.0",
+      "Serilog.Sinks.Console >= 3.1.1"
     ]
   },
   "packageFolders": {
@@ -4931,9 +4931,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\RealtimeTester.csproj",
-      "projectName": "RealtimeTester",
-      "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\RealtimeTester.csproj",
+      "projectUniqueName": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\Realtime.TesterCore.csproj",
+      "projectName": "Realtime.TesterCore",
+      "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\Realtime.TesterCore.csproj",
       "packagesPath": "C:\\Users\\imran.qureshi\\.nuget\\packages\\",
       "outputPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\obj\\",
       "projectStyle": "PackageReference",
@@ -4984,11 +4984,11 @@
           },
           "Serilog": {
             "target": "Package",
-            "version": "[2.5.0, )"
+            "version": "[2.6.0, )"
           },
           "Serilog.Sinks.Console": {
             "target": "Package",
-            "version": "[3.1.0, )"
+            "version": "[3.1.1, )"
           }
         },
         "imports": [
