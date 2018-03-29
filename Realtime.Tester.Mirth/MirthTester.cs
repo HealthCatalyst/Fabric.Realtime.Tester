@@ -21,7 +21,7 @@ PID|1||135769||MOUSE^MICKEY^||19281118|M|||123 Main St.^^Lake Buena Vista^FL^328
 PV1|1|O|||||^^^^^^^^|^^^^^^^^";
 
             // set up the queue first
-            
+
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
@@ -62,36 +62,37 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 Byte[] bytesReceived = new Byte[256];
 
                 // Create a socket connection with the specified server and port.
-                Socket s = ConnectSocket(server, port);
-
-                // If the socket could not get a connection, then return false.
-                if (s == null)
-                    throw new Exception("Could not connect to Mirth");
-
-                Console.WriteLine("---------------------------------");
-                Console.WriteLine($"Sending HL7 message to {server}");
-
-                // Send message to the server.
-                s.Send(bytesSent, bytesSent.Length, 0);
-
-                // Receive the response back
-                int bytes = 0;
-
-                s.ReceiveTimeout = 30 * 1000;
-                bytes = s.Receive(bytesReceived, bytesReceived.Length, 0);
-                string page = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
-                s.Close();
-
-                Console.Write(page);
-
-                // Check to see if it was successful
-                if (page.Contains("MSA|AA"))
+                using (Socket s = ConnectSocket(server, port))
                 {
-                    return true;
-                }
-                else
-                {
-                    throw new Exception($"Got invalid response from Mirth:[{page}]");
+
+                    // If the socket could not get a connection, then return false.
+                    if (s == null)
+                        throw new Exception("Could not connect to Mirth");
+
+                    Console.WriteLine("---------------------------------");
+                    Console.WriteLine($"Sending HL7 message to {server}");
+
+                    // Send message to the server.
+                    s.Send(bytesSent, bytesSent.Length, 0);
+
+                    // Receive the response back
+                    int bytes = 0;
+
+                    s.ReceiveTimeout = 30 * 1000;
+                    bytes = s.Receive(bytesReceived, bytesReceived.Length, 0);
+                    string page = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
+
+                    Console.Write(page);
+
+                    // Check to see if it was successful
+                    if (page.Contains("MSA|AA"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception($"Got invalid response from Mirth:[{page}]");
+                    }
                 }
             }
             catch (Exception ex)
@@ -107,7 +108,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             IPHostEntry hostEntry = null;
 
             // Get host related information.
-            hostEntry = Dns.GetHostEntry(server);
+            hostEntry = Dns.GetHostEntryAsync(server).Result;
 
             foreach (IPAddress address in hostEntry.AddressList)
             {

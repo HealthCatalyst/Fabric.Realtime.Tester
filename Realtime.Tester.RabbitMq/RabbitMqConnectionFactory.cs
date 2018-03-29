@@ -35,9 +35,9 @@ namespace Realtime.Tester.RabbitMq
 
                 foreach (X509Certificate2 certificate2 in store.Certificates)
                 {
-                    Debug.WriteLine("Expire:" + certificate2.GetExpirationDateString());
+                    Debug.WriteLine("Expire:" + certificate2.NotAfter);
                     Debug.WriteLine($"Issuer:[{certificate2.Issuer}]");
-                    Debug.WriteLine("Effective:" + certificate2.GetEffectiveDateString());
+                    Debug.WriteLine("Effective:" + certificate2.NotBefore);
                     Debug.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
                     Debug.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
                     Debug.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
@@ -61,20 +61,20 @@ namespace Realtime.Tester.RabbitMq
                 }
 
                 X509Certificate cert = x509Certificate2Collection
-                    .OfType<X509Certificate>()
-                    .OrderByDescending(a => a.GetExpirationDateString())
+                    .OfType<X509Certificate2>()
+                    .OrderByDescending(a => a.NotAfter)
                     .First();
 
-                // check that we can access the private key with the user this application is running under
-                try
-                {
-                    var key = ((X509Certificate2) cert).PrivateKey;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(
-                        "Cannot access private key for the certificate.  Make sure the user account of this application has access to private key for the client certificate with IssuerName=FabricCertificateAuthority.  https://docs.secureauth.com/display/KBA/Grant+Permission+to+Use+Signing+Certificate+Private+Key");
-                }
+                //// check that we can access the private key with the user this application is running under
+                //try
+                //{
+                //    var key = ((X509Certificate2) cert).PrivateKey;
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw new Exception(
+                //        "Cannot access private key for the certificate.  Make sure the user account of this application has access to private key for the client certificate with IssuerName=FabricCertificateAuthority.  https://docs.secureauth.com/display/KBA/Grant+Permission+to+Use+Signing+Certificate+Private+Key");
+                //}
 
                 // now, let's set the connection factory's ssl-specific settings
                 // NOTE: it's absolutely required that what you set as Ssl.ServerName be
