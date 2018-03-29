@@ -55,9 +55,12 @@ namespace Realtime.Tester.Certificates.Windows
 
                 FileSecurity fs = file.GetAccessControl();
 
-                NTAccount account = new NTAccount(user);
+                var sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+                var account = (NTAccount)sid.Translate(typeof(NTAccount));
+
+                // NTAccount account = new NTAccount(user);
                 fs.AddAccessRule(new FileSystemAccessRule(account,
-                    FileSystemRights.FullControl, AccessControlType.Allow));
+                    FileSystemRights.Read, AccessControlType.Allow));
 
                 file.SetAccessControl(fs);
             }
