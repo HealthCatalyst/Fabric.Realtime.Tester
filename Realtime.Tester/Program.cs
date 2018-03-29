@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Realtime.Tester.Certificates.Windows;
 using Realtime.Tester.Mirth;
 
 namespace Realtime.Tester
@@ -27,6 +28,8 @@ namespace Realtime.Tester
             {
                 mirthhostname = args[0];
             }
+
+            CertificateManager.InstallCertificate(mirthhostname, false, "z1M@n7S*o8K!");
 
             Console.WriteLine($"Connecting to host: {mirthhostname}");
 

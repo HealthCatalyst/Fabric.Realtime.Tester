@@ -61,6 +61,10 @@
       <Project>{7fef664d-a294-4719-95c5-9f85ba3effb6}</Project>
       <Name>Realtime.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Realtime.Tester.Certificates.Windows\Realtime.Tester.Certificates.Windows.csproj">
+      <Project>{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}</Project>
+      <Name>Realtime.Tester.Certificates.Windows</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Realtime.Tester.Mirth\Realtime.Tester.Mirth.csproj">
       <Project>{318b4e7f-35ac-46e5-bd4e-7c00677e9a9c}</Project>
       <Name>Realtime.Tester.Mirth</Name>

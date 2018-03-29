@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Interfaces", "Real
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Tester", "Realtime.Tester\Realtime.Tester.csproj", "{BAEBD8CB-B43D-42C5-9C28-6B93C094AD1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Tester.Certificates", "Realtime.Tester.Certificates\Realtime.Tester.Certificates.csproj", "{8546DDCF-A183-4A35-8FA9-23B80BB1D0F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Tester.Certificates.Windows", "Realtime.Tester.Certificates.Windows\Realtime.Tester.Certificates.Windows.csproj", "{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{BAEBD8CB-B43D-42C5-9C28-6B93C094AD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAEBD8CB-B43D-42C5-9C28-6B93C094AD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAEBD8CB-B43D-42C5-9C28-6B93C094AD1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8546DDCF-A183-4A35-8FA9-23B80BB1D0F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8546DDCF-A183-4A35-8FA9-23B80BB1D0F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8546DDCF-A183-4A35-8FA9-23B80BB1D0F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8546DDCF-A183-4A35-8FA9-23B80BB1D0F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37EA2805-1B0E-438B-8E71-B5FAFD8C83A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.5</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.FileSystem.AccessControl">
+      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.0\System.IO.FileSystem.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebClient">
+      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.0\System.Net.WebClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Csp">
+      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.0\System.Security.Cryptography.Csp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows">
+      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.0\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
