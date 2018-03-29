@@ -1,4 +1,6 @@
 ﻿using System;
+using Realtime.Tester.Mirth;
+using Realtime.Tester.RabbitMq;
 
 namespace RealtimeTester
 {
@@ -27,11 +29,13 @@ namespace RealtimeTester
 
             RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitmqhostname);
 
-            MirthTester.TestSendingHL7(mirthhostname);
+            IRabbitMqListener rabbitMqListener = new RabbitMqListener();
 
-            var rabbitMqListener = new RabbitMqListener();
+            MirthTester.TestSendingHL7(mirthhostname, rabbitMqListener);
 
-            rabbitMqListener.StartListening(mirthhostname);
+            //var rabbitMqListener = new RabbitMqListener();
+
+            //rabbitMqListener.StartListening(mirthhostname);
 
             Console.WriteLine("Press Enter to exit");
 

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace RealtimeTester
+namespace Realtime.Tester.RabbitMq
 {
-    class RabbitMqListener
+    public class RabbitMqListener : IRabbitMqListener
     {
         private const string ExchangeName = "fabric.realtime.hl7";
         private const string ExchangeType = "topic";

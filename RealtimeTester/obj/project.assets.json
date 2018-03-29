@@ -1401,6 +1401,43 @@
         "compile": {
           "ref/netstandard1.2/System.Threading.Timer.dll": {}
         }
+      },
+      "Realtime.Interfaces/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Realtime.Interfaces.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Realtime.Interfaces.dll": {}
+        }
+      },
+      "Realtime.Tester.Mirth/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Realtime.Interfaces": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Realtime.Tester.Mirth.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Realtime.Tester.Mirth.dll": {}
+        }
+      },
+      "Realtime.Tester.RabbitMq/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "RabbitMQ.Client": "5.0.1",
+          "Realtime.Interfaces": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Realtime.Tester.RabbitMq.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Realtime.Tester.RabbitMq.dll": {}
+        }
       }
     }
   },
@@ -4872,12 +4909,29 @@
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
       ]
+    },
+    "Realtime.Interfaces/1.0.0": {
+      "type": "project",
+      "path": "../Realtime.Interfaces/Realtime.Interfaces.csproj",
+      "msbuildProject": "../Realtime.Interfaces/Realtime.Interfaces.csproj"
+    },
+    "Realtime.Tester.Mirth/1.0.0": {
+      "type": "project",
+      "path": "../Realtime.Tester.Mirth/Realtime.Tester.Mirth.csproj",
+      "msbuildProject": "../Realtime.Tester.Mirth/Realtime.Tester.Mirth.csproj"
+    },
+    "Realtime.Tester.RabbitMq/1.0.0": {
+      "type": "project",
+      "path": "../Realtime.Tester.RabbitMq/Realtime.Tester.RabbitMq.csproj",
+      "msbuildProject": "../Realtime.Tester.RabbitMq/Realtime.Tester.RabbitMq.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.NETCore.App >= 2.0.0",
       "RabbitMQ.Client >= 5.0.1",
+      "Realtime.Tester.Mirth >= 1.0.0",
+      "Realtime.Tester.RabbitMq >= 1.0.0",
       "Serilog >= 2.5.0",
       "Serilog.Sinks.Console >= 3.1.0"
     ]
@@ -4888,9 +4942,6 @@
   },
   "project": {
     "version": "1.0.0",
-    "restoreSettings": {
-      "hideWarningsAndErrors": true
-    },
     "restore": {
       "projectUniqueName": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\RealtimeTester.csproj",
       "projectName": "RealtimeTester",
@@ -4910,11 +4961,19 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://healthcatalyst.pkgs.visualstudio.com/DefaultCollection/_packaging/PlatformCI/nuget/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj": {
+              "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj"
+            },
+            "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj": {
+              "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

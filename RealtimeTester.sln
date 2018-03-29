@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeTester", "RealtimeTester\RealtimeTester.csproj", "{C4C918B4-4261-4B52-B0F2-51437ED599A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealtimeTester", "RealtimeTester\RealtimeTester.csproj", "{C4C918B4-4261-4B52-B0F2-51437ED599A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Tester.RabbitMq", "Realtime.Tester.RabbitMq\Realtime.Tester.RabbitMq.csproj", "{7F21D52A-C5C8-4616-8487-74D71E6EA93A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Tester.Mirth", "Realtime.Tester.Mirth\Realtime.Tester.Mirth.csproj", "{318B4E7F-35AC-46E5-BD4E-7C00677E9A9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realtime.Interfaces", "Realtime.Interfaces\Realtime.Interfaces.csproj", "{7FEF664D-A294-4719-95C5-9F85BA3EFFB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{C4C918B4-4261-4B52-B0F2-51437ED599A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4C918B4-4261-4B52-B0F2-51437ED599A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4C918B4-4261-4B52-B0F2-51437ED599A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F21D52A-C5C8-4616-8487-74D71E6EA93A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F21D52A-C5C8-4616-8487-74D71E6EA93A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F21D52A-C5C8-4616-8487-74D71E6EA93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F21D52A-C5C8-4616-8487-74D71E6EA93A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{318B4E7F-35AC-46E5-BD4E-7C00677E9A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{318B4E7F-35AC-46E5-BD4E-7C00677E9A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{318B4E7F-35AC-46E5-BD4E-7C00677E9A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{318B4E7F-35AC-46E5-BD4E-7C00677E9A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FEF664D-A294-4719-95C5-9F85BA3EFFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FEF664D-A294-4719-95C5-9F85BA3EFFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FEF664D-A294-4719-95C5-9F85BA3EFFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FEF664D-A294-4719-95C5-9F85BA3EFFB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

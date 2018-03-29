@@ -11,4 +11,9 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Realtime.Tester.Mirth\Realtime.Tester.Mirth.csproj" />
+    <ProjectReference Include="..\Realtime.Tester.RabbitMq\Realtime.Tester.RabbitMq.csproj" />
+  </ItemGroup>
+
 </Project>

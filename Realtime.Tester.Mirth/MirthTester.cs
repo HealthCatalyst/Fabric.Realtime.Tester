@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Realtime.Tester.RabbitMq;
 
-namespace RealtimeTester
+namespace Realtime.Tester.Mirth
 {
     public class MirthTester
     {
 
-        public static void TestSendingHL7(string mirthhostname)
+        public static void TestSendingHL7(string mirthhostname, IRabbitMqListener rabbitMqListener)
         {
             // from http://www.mieweb.com/wiki/Sample_HL7_Messages#ADT.5EA01
             var message =
@@ -21,7 +21,7 @@ PID|1||135769||MOUSE^MICKEY^||19281118|M|||123 Main St.^^Lake Buena Vista^FL^328
 PV1|1|O|||||^^^^^^^^|^^^^^^^^";
 
             // set up the queue first
-            var rabbitMqListener = new RabbitMqListener();
+            
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;

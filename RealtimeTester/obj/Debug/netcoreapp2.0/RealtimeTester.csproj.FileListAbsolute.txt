@@ -9,3 +9,10 @@ C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\obj\Debug\netcoreapp2.0\Re
 C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\obj\Debug\netcoreapp2.0\RealtimeTester.AssemblyInfo.cs
 C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\obj\Debug\netcoreapp2.0\RealtimeTester.dll
 C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\obj\Debug\netcoreapp2.0\RealtimeTester.pdb
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Interfaces.dll
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Tester.Mirth.dll
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Tester.RabbitMq.dll
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Tester.Mirth.pdb
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Tester.RabbitMq.pdb
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\bin\Debug\netcoreapp2.0\Realtime.Interfaces.pdb
+C:\Catalyst\git\Fabric.Realtime.Tester\RealtimeTester\obj\Debug\netcoreapp2.0\RealtimeTester.csproj.CopyComplete

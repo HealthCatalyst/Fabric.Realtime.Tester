@@ -9,6 +9,8 @@
       "RealtimeTester/1.0.0": {
         "dependencies": {
           "RabbitMQ.Client": "5.0.1",
+          "Realtime.Tester.Mirth": "1.0.0",
+          "Realtime.Tester.RabbitMq": "1.0.0",
           "Serilog": "2.5.0",
           "Serilog.Sinks.Console": "3.1.0"
         },
@@ -841,6 +843,28 @@
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
         }
+      },
+      "Realtime.Interfaces/1.0.0": {
+        "runtime": {
+          "Realtime.Interfaces.dll": {}
+        }
+      },
+      "Realtime.Tester.Mirth/1.0.0": {
+        "dependencies": {
+          "Realtime.Interfaces": "1.0.0"
+        },
+        "runtime": {
+          "Realtime.Tester.Mirth.dll": {}
+        }
+      },
+      "Realtime.Tester.RabbitMq/1.0.0": {
+        "dependencies": {
+          "RabbitMQ.Client": "5.0.1",
+          "Realtime.Interfaces": "1.0.0"
+        },
+        "runtime": {
+          "Realtime.Tester.RabbitMq.dll": {}
+        }
       }
     }
   },
@@ -1360,6 +1384,21 @@
       "sha512": "sha512-Z6YfyYTCg7lOZjJzBjONJTFKGN9/NIYKSxhU5GRd+DTwHSZyvWp1xuI5aR+dLg+ayyC5Xv57KiY4oJ0tMO89fQ==",
       "path": "system.threading.timer/4.3.0",
       "hashPath": "system.threading.timer.4.3.0.nupkg.sha512"
+    },
+    "Realtime.Interfaces/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Realtime.Tester.Mirth/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Realtime.Tester.RabbitMq/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }
