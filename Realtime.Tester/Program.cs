@@ -17,19 +17,22 @@ namespace Realtime.Tester
 
             //string mirthhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
             string mirthhostname = "fabricrealtime.eastus.cloudapp.azure.com";
+            string certificatepassword = "";
 
             if (args.Length < 1)
             {
                 // host was not passed on the command line
                 Console.WriteLine("Enter host to connect to:");
                 mirthhostname = Console.ReadLine();
+                Console.WriteLine("Enter certificate password:");
+                certificatepassword = Console.ReadLine();
             }
             else
             {
                 mirthhostname = args[0];
             }
 
-            CertificateManager.InstallCertificate(mirthhostname, false, "z1M@n7S*o8K!");
+            CertificateManager.InstallCertificate(mirthhostname, false, certificatepassword);
 
             Console.WriteLine($"Connecting to host: {mirthhostname}");
 
