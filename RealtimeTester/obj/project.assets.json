@@ -4931,11 +4931,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\Realtime.TesterCore.csproj",
+      "projectUniqueName": "C:\\Catalyst\\git\\fabric.realtime.tester\\RealtimeTester\\Realtime.TesterCore.csproj",
       "projectName": "Realtime.TesterCore",
-      "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\Realtime.TesterCore.csproj",
+      "projectPath": "C:\\Catalyst\\git\\fabric.realtime.tester\\RealtimeTester\\Realtime.TesterCore.csproj",
       "packagesPath": "C:\\Users\\imran.qureshi\\.nuget\\packages\\",
-      "outputPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\RealtimeTester\\obj\\",
+      "outputPath": "C:\\Catalyst\\git\\fabric.realtime.tester\\RealtimeTester\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -4949,17 +4949,16 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://healthcatalyst.pkgs.visualstudio.com/DefaultCollection/_packaging/PlatformCI/nuget/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj": {
-              "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj"
+            "C:\\Catalyst\\git\\fabric.realtime.tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj": {
+              "projectPath": "C:\\Catalyst\\git\\fabric.realtime.tester\\Realtime.Tester.Mirth\\Realtime.Tester.Mirth.csproj"
             },
-            "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj": {
-              "projectPath": "C:\\Catalyst\\git\\Fabric.Realtime.Tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj"
+            "C:\\Catalyst\\git\\fabric.realtime.tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj": {
+              "projectPath": "C:\\Catalyst\\git\\fabric.realtime.tester\\Realtime.Tester.RabbitMq\\Realtime.Tester.RabbitMq.csproj"
             }
           }
         }
