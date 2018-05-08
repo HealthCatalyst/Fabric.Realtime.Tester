@@ -20,4 +20,8 @@ _ReSharper.*
 */obj
 RealtimeTester/bin/*
 RealtimeTester/obj/*
+packages/
+obj/
+RealtimeTester/obj
 
+RealtimeTester/obj/project.assets.json

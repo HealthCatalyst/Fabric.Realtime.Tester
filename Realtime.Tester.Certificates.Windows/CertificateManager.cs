@@ -29,7 +29,11 @@ namespace Realtime.Tester.Certificates.Windows
                     }
                     else
                     {
-                        return;
+                        if (result.Content != null)
+                        {
+                            throw new Exception(result.Content.ReadAsStringAsync().Result);
+                        }
+                        throw new Exception($"Error code {result.StatusCode} from url: {url}");
                     }
 
                 }
@@ -47,9 +51,7 @@ namespace Realtime.Tester.Certificates.Windows
 
         private static void AddAccessToCertificate(X509Certificate2 cert, string user)
         {
-            RSACryptoServiceProvider rsa = cert.PrivateKey as RSACryptoServiceProvider;
-
-            if (rsa != null)
+            if (cert.PrivateKey is RSACryptoServiceProvider rsa)
             {
                 string keyfilepath =
                     FindKeyLocation(rsa.CspKeyContainerInfo.UniqueKeyContainerName);
