@@ -27,12 +27,20 @@ namespace Realtime.Tester
                     // host was not passed on the command line
                     Console.WriteLine("Enter host to connect to:");
                     mirthhostname = Console.ReadLine();
+                }
+                else
+                {
+                    mirthhostname = args[0];
+                }
+
+                if (args.Length < 2)
+                {
                     Console.WriteLine("Enter certificate password:");
                     certificatepassword = Console.ReadLine();
                 }
                 else
                 {
-                    mirthhostname = args[0];
+                    certificatepassword = args[1];
                 }
 
                 CertificateManager.InstallCertificate(mirthhostname, false, certificatepassword);
