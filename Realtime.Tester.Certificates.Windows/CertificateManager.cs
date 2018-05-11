@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
@@ -17,6 +18,13 @@ namespace Realtime.Tester.Certificates.Windows
             byte[] certdata;
 
             Console.WriteLine($"Download certificate from {url}");
+
+            // disable certificate check for testing
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+                {
+                    Console.WriteLine($"SSL error: {errors}");
+                    return true;
+                };
 
             using (var client = new HttpClient())
             {
