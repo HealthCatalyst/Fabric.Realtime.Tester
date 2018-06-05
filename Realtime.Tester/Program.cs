@@ -33,6 +33,8 @@ namespace Realtime.Tester
                     mirthhostname = args[0];
                 }
 
+                mirthhostname = mirthhostname?.Trim();
+
                 if (args.Length < 2)
                 {
                     Console.WriteLine("Enter certificate password:");
@@ -43,7 +45,9 @@ namespace Realtime.Tester
                     certificatepassword = args[1];
                 }
 
-                CertificateManager.InstallCertificate(mirthhostname, false, certificatepassword);
+                certificatepassword = certificatepassword?.Trim();
+
+                CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
 
                 Console.WriteLine($"Connecting to host: {mirthhostname}");
 
