@@ -1,6 +1,10 @@
 # Visual Studio 2015 cache/options directory
 .vs/
 
+RealtimeTester/obj/project.assets.json
+RealtimeTester/obj/*
+packages/*
+
 # .NET Specific Folders #
 #########################
 [Oo]bj
@@ -24,4 +28,4 @@ packages/
 obj/
 RealtimeTester/obj
 
-RealtimeTester/obj/project.assets.json
+

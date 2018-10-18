@@ -1,15 +1,21 @@
-﻿using Realtime.Tester.RabbitMq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Realtime.Tester.Certificates.Windows;
-using Realtime.Tester.Mirth;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Realtime.Tester
 {
-    class Program
+    using System;
+
+    using Realtime.Tester.Certificates.Windows;
+    using Realtime.Tester.Mirth;
+    using Realtime.Tester.RabbitMq;
+
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -35,19 +41,19 @@ namespace Realtime.Tester
 
                 mirthhostname = mirthhostname?.Trim();
 
-                if (args.Length < 2)
-                {
-                    Console.WriteLine("Enter certificate password:");
-                    certificatepassword = Console.ReadLine();
-                }
-                else
-                {
-                    certificatepassword = args[1];
-                }
+                //if (args.Length < 2)
+                //{
+                //    Console.WriteLine("Enter certificate password:");
+                //    certificatepassword = Console.ReadLine();
+                //}
+                //else
+                //{
+                //    certificatepassword = args[1];
+                //}
 
-                certificatepassword = certificatepassword?.Trim();
+                //certificatepassword = certificatepassword?.Trim();
 
-                CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
+                //CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
 
                 Console.WriteLine($"Connecting to host: {mirthhostname}");
 
