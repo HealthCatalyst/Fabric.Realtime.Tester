@@ -31,9 +31,9 @@ namespace Realtime.Tester.RabbitMq
         /// <returns>
         /// The <see cref="ConnectionFactory"/>.
         /// </returns>
-        /// <exception cref="Exception">
+        /// <exception cref="Exception">exception thrown
         /// </exception>
-        internal static ConnectionFactory GetConnectionFactory(string rabbitmqhostname)
+        public static ConnectionFactory GetConnectionFactory(string rabbitmqhostname)
         {
             // from http://blog.johnruiz.com/2011/12/establishing-ssl-connection-to-rabbitmq.html
             // and https://www.rabbitmq.com/ssl.html
@@ -109,10 +109,10 @@ namespace Realtime.Tester.RabbitMq
                     Enabled = true,
                     ServerName = rabbitmqhostname,
                     CertificateValidationCallback = MyValidateServerCertificate,
-                    //AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
-                    //                         SslPolicyErrors.RemoteCertificateChainErrors,
-                    Certs = new X509CertificateCollection(new X509Certificate[] {cert}),
-
+                    AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
+                                             SslPolicyErrors.RemoteCertificateChainErrors,
+                    Certs = new X509CertificateCollection(new X509Certificate[] { cert }),
+                    Version = System.Security.Authentication.SslProtocols.Tls12
                 };
             }
             else
@@ -140,18 +140,20 @@ namespace Realtime.Tester.RabbitMq
             X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
+            Console.WriteLine($"Certificate Subject= {certificate.Subject}");
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
                 return true;
             }
 
+            Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
+
             // allow the CA to not be present
-            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+            if (sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
             {
                 return true;
             }
 
-            Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
 
             // Do not allow this client to communicate with unauthenticated servers.
             return false;

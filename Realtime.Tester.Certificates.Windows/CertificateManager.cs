@@ -74,6 +74,7 @@ namespace Realtime.Tester.Certificates.Windows
             }
 
             X509Certificate2 cert = new X509Certificate2(certdata, password);
+            var foo = cert.Subject;
             X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadWrite);
             store.Add(cert); // where cert is an X509Certificate object

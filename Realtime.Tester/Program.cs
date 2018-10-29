@@ -63,11 +63,11 @@ namespace Realtime.Tester
 
                 certificatepassword = certificatepassword?.Trim();
 
-                Console.WriteLine("Installing SSL client certificate");
+                Console.WriteLine("--- Installing SSL client certificate ---");
 
                 CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
 
-                Console.WriteLine($"Connecting to host: {mirthhostname}");
+                Console.WriteLine($"--- Connecting to host: {mirthhostname} ---");
 
                 string rabbitmqhostname = mirthhostname;
 
@@ -91,9 +91,7 @@ namespace Realtime.Tester
                 Console.WriteLine("Press Enter to exit");
 
                 Console.ReadLine();
-
             }
-
         }
     }
 }
