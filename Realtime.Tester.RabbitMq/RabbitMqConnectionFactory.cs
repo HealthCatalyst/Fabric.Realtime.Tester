@@ -1,14 +1,38 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using RabbitMQ.Client;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RabbitMqConnectionFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RabbitMqConnectionFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Realtime.Tester.RabbitMq
 {
-    class RabbitMqConnectionFactory
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
+
+    using RabbitMQ.Client;
+
+    /// <summary>
+    /// The rabbit mq connection factory.
+    /// </summary>
+    public class RabbitMqConnectionFactory
     {
+        /// <summary>
+        /// The get connection factory.
+        /// </summary>
+        /// <param name="rabbitmqhostname">
+        /// The rabbitmqhostname.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ConnectionFactory"/>.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// </exception>
         internal static ConnectionFactory GetConnectionFactory(string rabbitmqhostname)
         {
             // from http://blog.johnruiz.com/2011/12/establishing-ssl-connection-to-rabbitmq.html
@@ -50,8 +74,7 @@ namespace Realtime.Tester.RabbitMq
                     .Find(
                         X509FindType.FindByIssuerName,
                         "FabricCertificateAuthority",
-                        false
-                    );
+                        false);
 
                 if (!x509Certificate2Collection
                     .OfType<X509Certificate>().Any())
@@ -106,11 +129,11 @@ namespace Realtime.Tester.RabbitMq
         /// <summary>
         /// from https://msdn.microsoft.com/en-us/library/system.net.security.remotecertificatevalidationcallback(v=vs.110).aspx
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="certificate"></param>
-        /// <param name="chain"></param>
-        /// <param name="sslPolicyErrors"></param>
-        /// <returns></returns>
+        /// <param name="sender">sender name</param>
+        /// <param name="certificate">certificate name</param>
+        /// <param name="chain">chain of cert</param>
+        /// <param name="sslPolicyErrors">ssl policy errors</param>
+        /// <returns>whether cert is valid </returns>
         public static bool MyValidateServerCertificate(
             object sender,
             X509Certificate certificate,
@@ -118,11 +141,15 @@ namespace Realtime.Tester.RabbitMq
             SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None)
+            {
                 return true;
+            }
 
             // allow the CA to not be present
             if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+            {
                 return true;
+            }
 
             Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
 
@@ -133,12 +160,12 @@ namespace Realtime.Tester.RabbitMq
         /// <summary>
         /// from https://msdn.microsoft.com/en-us/library/system.net.security.localcertificateselectioncallback(v=vs.110).aspx
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="targetHost"></param>
-        /// <param name="localCertificates"></param>
-        /// <param name="remoteCertificate"></param>
-        /// <param name="acceptableIssuers"></param>
-        /// <returns></returns>
+        /// <param name="sender">sender name</param>
+        /// <param name="targetHost">target host</param>
+        /// <param name="localCertificates">local certificates</param>
+        /// <param name="remoteCertificate">remote certificates</param>
+        /// <param name="acceptableIssuers">acceptable issuers</param>
+        /// <returns>local certificate</returns>
         public static X509Certificate SelectLocalCertificate(
             object sender,
             string targetHost,
@@ -157,15 +184,18 @@ namespace Realtime.Tester.RabbitMq
                 {
                     string issuer = certificate.Issuer;
                     if (Array.IndexOf(acceptableIssuers, issuer) != -1)
+                    {
                         return certificate;
+                    }
                 }
             }
-            if (localCertificates != null &&
-                localCertificates.Count > 0)
+
+            if (localCertificates != null && localCertificates.Count > 0)
+            {
                 return localCertificates[0];
+            }
 
             return null;
         }
-
     }
 }

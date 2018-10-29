@@ -11,22 +11,32 @@ namespace Realtime.Tester
 {
     using System;
 
+    using Realtime.Interfaces;
     using Realtime.Tester.Certificates.Windows;
     using Realtime.Tester.Mirth;
     using Realtime.Tester.RabbitMq;
 
+    /// <summary>
+    /// The program.
+    /// </summary>
     public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The main.
+        /// </summary>
+        /// <param name="args">
+        /// The args.
+        /// </param>
+        public static void Main(string[] args)
         {
             try
             {
 
                 Console.WriteLine("Realtime tester using .Net Framework 4.6.1");
 
-                //string mirthhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
+                // string mirthhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
                 string mirthhostname = "fabricrealtime.eastus.cloudapp.azure.com";
-                string certificatepassword = "";
+                string certificatepassword;
 
                 if (args.Length < 1)
                 {
@@ -41,19 +51,21 @@ namespace Realtime.Tester
 
                 mirthhostname = mirthhostname?.Trim();
 
-                //if (args.Length < 2)
-                //{
-                //    Console.WriteLine("Enter certificate password:");
-                //    certificatepassword = Console.ReadLine();
-                //}
-                //else
-                //{
-                //    certificatepassword = args[1];
-                //}
+                if (args.Length < 2)
+                {
+                    Console.WriteLine("Enter certificate password:");
+                    certificatepassword = Console.ReadLine();
+                }
+                else
+                {
+                    certificatepassword = args[1];
+                }
 
-                //certificatepassword = certificatepassword?.Trim();
+                certificatepassword = certificatepassword?.Trim();
 
-                //CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
+                Console.WriteLine("Installing SSL client certificate");
+
+                CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
 
                 Console.WriteLine($"Connecting to host: {mirthhostname}");
 

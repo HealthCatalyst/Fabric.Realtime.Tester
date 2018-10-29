@@ -1,16 +1,37 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Realtime.Tester.RabbitMq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MirthTester.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the MirthTester type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Realtime.Tester.Mirth
 {
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Realtime.Interfaces;
+
+    /// <summary>
+    /// The mirth tester.
+    /// </summary>
     public class MirthTester
     {
-
+        /// <summary>
+        /// The test sending h l 7.
+        /// </summary>
+        /// <param name="mirthhostname">
+        /// The mirthhostname.
+        /// </param>
+        /// <param name="rabbitMqListener">
+        /// The rabbit mq listener.
+        /// </param>
         public static void TestSendingHL7(string mirthhostname, IRabbitMqListener rabbitMqListener)
         {
             // from http://www.mieweb.com/wiki/Sample_HL7_Messages#ADT.5EA01
@@ -21,8 +42,6 @@ PID|1||135769||MOUSE^MICKEY^||19281118|M|||123 Main St.^^Lake Buena Vista^FL^328
 PV1|1|O|||||^^^^^^^^|^^^^^^^^";
 
             // set up the queue first
-
-
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
@@ -47,9 +66,25 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             task.Wait();
 
             var r = task.Result;
-
         }
 
+        /// <summary>
+        /// The send h l 7.
+        /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
+        /// <param name="port">
+        /// The port.
+        /// </param>
+        /// <param name="hl7message">
+        /// The hl 7 message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="Exception">exception thrown
+        /// </exception>
         internal static bool SendHL7(string server, int port, string hl7message)
         {
             try
@@ -58,16 +93,17 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 string llphl7message = Convert.ToChar(11).ToString() + hl7message + Convert.ToChar(28).ToString() + Convert.ToChar(13).ToString();
 
                 // Get the size of the message that we have to send.
-                Byte[] bytesSent = Encoding.ASCII.GetBytes(llphl7message);
-                Byte[] bytesReceived = new Byte[256];
+                byte[] bytesSent = Encoding.ASCII.GetBytes(llphl7message);
+                byte[] bytesReceived = new byte[256];
 
                 // Create a socket connection with the specified server and port.
                 using (Socket s = ConnectSocket(server, port))
                 {
-
                     // If the socket could not get a connection, then return false.
                     if (s == null)
+                    {
                         throw new Exception("Could not connect to Mirth");
+                    }
 
                     Console.WriteLine("---------------------------------");
                     Console.WriteLine($"Sending HL7 message to {server}");
@@ -102,6 +138,18 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             }
         }
 
+        /// <summary>
+        /// The connect socket.
+        /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
+        /// <param name="port">
+        /// The port.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Socket"/>.
+        /// </returns>
         private static Socket ConnectSocket(string server, int port)
         {
             Socket s = null;
@@ -128,6 +176,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                     continue;
                 }
             }
+
             return s;
         }
     }

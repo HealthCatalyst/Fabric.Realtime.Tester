@@ -1,19 +1,43 @@
-﻿using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RabbitMqListener.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RabbitMqListener type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Realtime.Tester.RabbitMq
 {
+    using System;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using RabbitMQ.Client;
+    using RabbitMQ.Client.Events;
+
+    using Realtime.Interfaces;
+
+    /// <inheritdoc />
     public class RabbitMqListener : IRabbitMqListener
     {
+        /// <summary>
+        /// The exchange name.
+        /// </summary>
         private const string ExchangeName = "fabric.realtime.hl7";
+
+        /// <summary>
+        /// The exchange type.
+        /// </summary>
         private const string ExchangeType = "topic";
 
-        private const string routingKey = "#";
+        /// <summary>
+        /// The routing key.
+        /// </summary>
+        private const string RoutingKey = "#";
 
+        /// <inheritdoc />
         public string GetMessage(string hostname, CancellationToken token, AutoResetEvent messageReceivedWaitHandle, AutoResetEvent channelCreatedWaitHandle)
         {
             var factory = RabbitMqConnectionFactory.GetConnectionFactory(hostname);
@@ -24,7 +48,7 @@ namespace Realtime.Tester.RabbitMq
                 channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType, durable: true);
                 var queueName = channel.QueueDeclare().QueueName;
 
-                channel.QueueBind(queue: queueName, exchange: ExchangeName, routingKey: routingKey);
+                channel.QueueBind(queue: queueName, exchange: ExchangeName, routingKey: RoutingKey);
 
                 channelCreatedWaitHandle.Set();
 
@@ -32,7 +56,7 @@ namespace Realtime.Tester.RabbitMq
                 string myMessage = null;
 
                 Console.WriteLine(
-                    $"Listening for messages on host:{hostname} for queue:{queueName}, exchange:{ExchangeName} with routing key:{routingKey}");
+                    $"Listening for messages on host:{hostname} for queue:{queueName}, exchange:{ExchangeName} with routing key:{RoutingKey}");
 
                 consumer.Received += (model, ea) =>
                 {
@@ -55,6 +79,7 @@ namespace Realtime.Tester.RabbitMq
 
         }
 
+        /// <inheritdoc />
         public CancellationTokenSource StartListening(string mirthhostname)
         {
             // set up the queue first
@@ -72,7 +97,7 @@ namespace Realtime.Tester.RabbitMq
             // wait until the message has been received
 
             // tell the other thread to end
-            //tokenSource.Cancel();
+            // tokenSource.Cancel();
 
             return tokenSource;
         }
