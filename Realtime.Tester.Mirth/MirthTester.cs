@@ -77,7 +77,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
         /// <param name="port">
         /// The port.
         /// </param>
-        /// <param name="hl7message">
+        /// <param name="hl7Message">
         /// The hl 7 message.
         /// </param>
         /// <returns>
@@ -85,15 +85,15 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
         /// </returns>
         /// <exception cref="Exception">exception thrown
         /// </exception>
-        internal static bool SendHL7(string server, int port, string hl7message)
+        internal static bool SendHL7(string server, int port, string hl7Message)
         {
             try
             {
                 // Add the leading and trailing characters so it is LLP complaint.
-                string llphl7message = Convert.ToChar(11).ToString() + hl7message + Convert.ToChar(28).ToString() + Convert.ToChar(13).ToString();
+                string llpHL7Message = Convert.ToChar(11).ToString() + hl7Message + Convert.ToChar(28).ToString() + Convert.ToChar(13).ToString();
 
                 // Get the size of the message that we have to send.
-                byte[] bytesSent = Encoding.ASCII.GetBytes(llphl7message);
+                byte[] bytesSent = Encoding.ASCII.GetBytes(llpHL7Message);
                 byte[] bytesReceived = new byte[256];
 
                 Console.WriteLine($"Connecting to server: {server} on port {port}");

@@ -48,7 +48,9 @@ namespace Realtime.Tester.Certificates.Windows
             // disable certificate check for testing
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
                 {
+                    Console.WriteLine("================================");
                     Console.WriteLine($"SSL error: {errors}");
+                    Console.WriteLine("================================");
                     return true;
                 };
 

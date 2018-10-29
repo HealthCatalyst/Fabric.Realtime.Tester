@@ -146,7 +146,12 @@ namespace Realtime.Tester.RabbitMq
                 return true;
             }
 
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("================================");
             Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
+            Console.WriteLine($"Certificate Subject= {certificate.Subject}");
+            Console.WriteLine("================================");
+            Console.ResetColor();
 
             // allow the CA to not be present
             if (sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
