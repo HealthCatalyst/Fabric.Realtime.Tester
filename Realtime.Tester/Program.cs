@@ -67,20 +67,17 @@ namespace Realtime.Tester
 
                 CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
 
-                Console.WriteLine($"--- Connecting to host: {mirthhostname} ---");
+                Console.WriteLine($"--- Connecting to rabbitmq host: {mirthhostname} ---");
 
                 string rabbitmqhostname = mirthhostname;
 
                 RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitmqhostname);
 
+                Console.WriteLine($"--- Listening to message from rabbitmq at host: {rabbitmqhostname} ---");
                 IRabbitMqListener rabbitMqListener = new RabbitMqListener();
 
+                Console.WriteLine($"--- Sending HL7 message to host: {mirthhostname} ---");
                 MirthTester.TestSendingHL7(mirthhostname, rabbitMqListener);
-
-                //var rabbitMqListener = new RabbitMqListener();
-
-                //rabbitMqListener.StartListening(mirthhostname);
-
             }
             catch (Exception e)
             {

@@ -49,6 +49,7 @@ namespace Realtime.Tester.RabbitMq
                             Console.WriteLine("Received:");
                             DebugUtil.DumpProperties(result, Console.Out, 0);
                         }
+
                         ch.QueueDelete("rabbitmq-dotnet-test");
                     }
                 }

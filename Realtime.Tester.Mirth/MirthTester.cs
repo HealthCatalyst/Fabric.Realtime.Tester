@@ -96,6 +96,8 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 byte[] bytesSent = Encoding.ASCII.GetBytes(llphl7message);
                 byte[] bytesReceived = new byte[256];
 
+                Console.WriteLine($"Connecting to server: {server} on port {port}");
+
                 // Create a socket connection with the specified server and port.
                 using (Socket s = ConnectSocket(server, port))
                 {
@@ -152,32 +154,55 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
         /// </returns>
         private static Socket ConnectSocket(string server, int port)
         {
-            Socket s = null;
-            IPHostEntry hostEntry = null;
+            // first see if the string is an IPAddress
+            // ReSharper disable once InlineOutVariableDeclaration
+            IPAddress ipAddress;
+            if (IPAddress.TryParse(server, out ipAddress))
+            {
+                return ConnectSocket(ipAddress, port);
+            }
 
             // Get host related information.
-            hostEntry = Dns.GetHostEntryAsync(server).Result;
+            var hostEntry = Dns.GetHostEntryAsync(server).Result;
 
             foreach (IPAddress address in hostEntry.AddressList)
             {
-                IPEndPoint ipe = new IPEndPoint(address, port);
-                Socket tempSocket =
-                    new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                tempSocket.Connect(ipe);
-
-                if (tempSocket.Connected)
+                var socket = ConnectSocket(address, port);
+                if (socket != null)
                 {
-                    s = tempSocket;
                     break;
-                }
-                else
-                {
-                    continue;
                 }
             }
 
-            return s;
+            return null;
+        }
+
+        /// <summary>
+        /// The connect socket.
+        /// </summary>
+        /// <param name="address">
+        /// The address.
+        /// </param>
+        /// <param name="port">
+        /// The port.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Socket"/>.
+        /// </returns>
+        private static Socket ConnectSocket(IPAddress address, int port)
+        {
+            IPEndPoint ipe = new IPEndPoint(address, port);
+            Socket tempSocket =
+                new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            tempSocket.Connect(ipe);
+
+            if (tempSocket.Connected)
+            {
+                return tempSocket;
+            }
+
+            return null;
         }
     }
 }
