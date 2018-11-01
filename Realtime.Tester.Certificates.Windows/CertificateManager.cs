@@ -48,9 +48,10 @@ namespace Realtime.Tester.Certificates.Windows
             string serviceAccountToGrantAccess)
         {
             string url = (ssl ? "https" : "http") + string.Empty
+                                                  // ReSharper disable once StringLiteralTypo
                                                   + $"://{hostname}/certificates/client/fabricrabbitmquser_client_cert.p12";
 
-            InternalInstallCertificate(StoreName.My, url, password, serviceAccountToGrantAccess);
+            InternalInstallCertificate(StoreName.My, url, password, serviceAccountToGrantAccess, true);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace Realtime.Tester.Certificates.Windows
             string url = (ssl ? "https" : "http") + string.Empty
                                                   + $"://{hostname}/certificates/client/fabric_ca_cert.p12";
 
-            InternalInstallCertificate(StoreName.Root, url, password, serviceAccountToGrantAccess);
+            InternalInstallCertificate(StoreName.Root, url, password, serviceAccountToGrantAccess, false);
         }
 
         /// <summary>
@@ -108,6 +109,9 @@ namespace Realtime.Tester.Certificates.Windows
             ShowCertificates(StoreName.My, issuer);
         }
 
+        /// <summary>
+        /// The remove my certificates.
+        /// </summary>
         public static void RemoveMyCertificates()
         {
             // ReSharper disable once StringLiteralTypo
@@ -178,13 +182,15 @@ namespace Realtime.Tester.Certificates.Windows
         /// <param name="serviceAccountToGrantAccess">
         ///     The service account to grant access.
         /// </param>
+        /// <param name="addAccessToCertificateForServiceAccount">whether to add access to certificate</param>
         /// <exception cref="Exception">exception thrown
         /// </exception>
         private static void InternalInstallCertificate(
             StoreName storeName,
             string url,
             string password,
-            string serviceAccountToGrantAccess)
+            string serviceAccountToGrantAccess,
+            bool addAccessToCertificateForServiceAccount)
         {
             byte[] certificateData;
 
@@ -255,7 +261,10 @@ namespace Realtime.Tester.Certificates.Windows
             store.Add(newCertificate); // where cert is an X509Certificate object
             Console.WriteLine("Added cert to LocalMachine store");
 
-            AddAccessToCertificate(newCertificate, serviceAccountToGrantAccess);
+            if (addAccessToCertificateForServiceAccount)
+            {
+                AddAccessToCertificate(newCertificate, serviceAccountToGrantAccess);
+            }
 
             store.Close();
         }
@@ -302,10 +311,10 @@ namespace Realtime.Tester.Certificates.Windows
         /// <param name="cert">
         /// The cert.
         /// </param>
-        /// <param name="user">
-        /// The user.
+        /// <param name="serviceAccount">
+        /// The serviceAccount.
         /// </param>
-        private static void AddAccessToCertificate(X509Certificate2 cert, string user)
+        private static void AddAccessToCertificate(X509Certificate2 cert, string serviceAccount)
         {
             if (cert.PrivateKey is RSACryptoServiceProvider rsa)
             {
@@ -317,15 +326,32 @@ namespace Realtime.Tester.Certificates.Windows
 
                 FileSecurity fs = file.GetAccessControl();
 
-                var sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
-                var account = (NTAccount)sid.Translate(typeof(NTAccount));
+                if (string.IsNullOrWhiteSpace(serviceAccount))
+                {
+                    var sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+                    var account = (NTAccount)sid.Translate(typeof(NTAccount));
 
-                // NTAccount account = new NTAccount(user);
-                fs.AddAccessRule(new FileSystemAccessRule(account, FileSystemRights.Read, AccessControlType.Allow));
+                    Console.WriteLine("Adding access for all authenticated users");
+                    fs.AddAccessRule(new FileSystemAccessRule(account, FileSystemRights.Read, AccessControlType.Allow));
+                }
+                else
+                {
+                    Console.WriteLine($"Adding access for {serviceAccount}");
+                    NTAccount account = new NTAccount(serviceAccount);
+                    fs.AddAccessRule(new FileSystemAccessRule(account, FileSystemRights.Read, AccessControlType.Allow));
+                }
+
+                {
+                    // always add permission for current user for testing
+                    var currentUser = WindowsIdentity.GetCurrent().Name;
+                    Console.WriteLine($"Adding access for current user {currentUser}");
+                    NTAccount account = new NTAccount(currentUser);
+                    fs.AddAccessRule(new FileSystemAccessRule(account, FileSystemRights.Read, AccessControlType.Allow));
+                }
 
                 file.SetAccessControl(fs);
 
-                Console.WriteLine("Added access to the cert's private key to all authenticated users");
+                Console.WriteLine("Added access to certificate");
             }
         }
 

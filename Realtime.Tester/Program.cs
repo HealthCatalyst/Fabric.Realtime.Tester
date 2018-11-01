@@ -10,7 +10,6 @@
 namespace Realtime.Tester
 {
     using System;
-    using System.Security.Principal;
 
     using Realtime.Interfaces;
     using Realtime.Tester.Certificates.Windows;
@@ -34,14 +33,17 @@ namespace Realtime.Tester
             {
                 Console.WriteLine("Realtime tester using .Net Framework 4.6.1");
 
-                // string mirthhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
                 string mirthHostName;
 
                 if (args.Length < 1)
                 {
                     // host was not passed on the command line
-                    Console.Write("Enter host to connect to: ");
-                    mirthHostName = Console.ReadLine();
+                    do
+                    {
+                        Console.Write("Enter host to connect to: ");
+                        mirthHostName = Console.ReadLine();
+                    }
+                    while (string.IsNullOrWhiteSpace(mirthHostName));
                 }
                 else
                 {
@@ -65,8 +67,12 @@ namespace Realtime.Tester
                                 string certificatePassword;
                                 if (args.Length < 2)
                                 {
-                                    Console.Write("Enter certificate password: ");
-                                    certificatePassword = Console.ReadLine();
+                                    do
+                                    {
+                                        Console.Write("Enter certificate password: ");
+                                        certificatePassword = Console.ReadLine();
+                                    }
+                                    while (string.IsNullOrEmpty(certificatePassword));
                                 }
                                 else
                                 {
@@ -76,7 +82,7 @@ namespace Realtime.Tester
                                 certificatePassword = certificatePassword?.Trim();
 
                                 Console.WriteLine("--- Installing Trusted Root certificate ---");
-                                CertificateManager.InstallTrustedRootCertificate(mirthHostName, true, certificatePassword, WindowsIdentity.GetCurrent().Name);
+                                CertificateManager.InstallTrustedRootCertificate(mirthHostName, true, certificatePassword, null);
 
                                 break;
                             }
@@ -86,8 +92,12 @@ namespace Realtime.Tester
                                 string certificatePassword;
                                 if (args.Length < 2)
                                 {
-                                    Console.Write("Enter certificate password: ");
-                                    certificatePassword = Console.ReadLine();
+                                    do
+                                    {
+                                        Console.Write("Enter certificate password: ");
+                                        certificatePassword = Console.ReadLine();
+                                    }
+                                    while (string.IsNullOrEmpty(certificatePassword));
                                 }
                                 else
                                 {
@@ -96,8 +106,16 @@ namespace Realtime.Tester
 
                                 certificatePassword = certificatePassword?.Trim();
 
+                                Console.WriteLine(
+                                    "Please enter service account name that runs the data processing engine so we can grant it access to the certificate (Leave empty to give access to All Authenticated Users)");
+                                var serviceAccountName = Console.ReadLine();
+
                                 Console.WriteLine("--- Installing SSL client certificate ---");
-                                CertificateManager.InstallClientCertificate(mirthHostName, true, certificatePassword, WindowsIdentity.GetCurrent().Name);
+                                CertificateManager.InstallClientCertificate(
+                                    mirthHostName,
+                                    true,
+                                    certificatePassword,
+                                    serviceAccountName);
 
                                 break;
                             }
