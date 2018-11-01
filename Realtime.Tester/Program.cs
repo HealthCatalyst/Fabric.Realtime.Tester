@@ -10,6 +10,7 @@
 namespace Realtime.Tester
 {
     using System;
+    using System.Security.Principal;
 
     using Realtime.Interfaces;
     using Realtime.Tester.Certificates.Windows;
@@ -61,32 +62,67 @@ namespace Realtime.Tester
                     {
                         case "1":
                             {
-                                string certificatepassword;
+                                string certificatePassword;
                                 if (args.Length < 2)
                                 {
                                     Console.Write("Enter certificate password: ");
-                                    certificatepassword = Console.ReadLine();
+                                    certificatePassword = Console.ReadLine();
                                 }
                                 else
                                 {
-                                    certificatepassword = args[1];
+                                    certificatePassword = args[1];
                                 }
 
-                                certificatepassword = certificatepassword?.Trim();
+                                certificatePassword = certificatePassword?.Trim();
 
-                                Console.WriteLine("--- Installing SSL client certificate ---");
+                                Console.WriteLine("--- Installing Trusted Root certificate ---");
+                                CertificateManager.InstallTrustedRootCertificate(mirthHostName, true, certificatePassword, WindowsIdentity.GetCurrent().Name);
 
-                                CertificateManager.InstallCertificate(mirthHostName, true, certificatepassword);
                                 break;
                             }
 
                         case "2":
                             {
-                                CertificateManager.ShowExistingCertificates();
+                                string certificatePassword;
+                                if (args.Length < 2)
+                                {
+                                    Console.Write("Enter certificate password: ");
+                                    certificatePassword = Console.ReadLine();
+                                }
+                                else
+                                {
+                                    certificatePassword = args[1];
+                                }
+
+                                certificatePassword = certificatePassword?.Trim();
+
+                                Console.WriteLine("--- Installing SSL client certificate ---");
+                                CertificateManager.InstallClientCertificate(mirthHostName, true, certificatePassword, WindowsIdentity.GetCurrent().Name);
+
                                 break;
                             }
 
                         case "3":
+                            {
+                                CertificateManager.ShowMyCertificates();
+                                break;
+                            }
+
+                        case "4":
+                            {
+                                Console.WriteLine("-------- Client Certificates ----------");
+                                CertificateManager.ShowExistingCertificates();
+                                break;
+                            }
+
+                        case "5":
+                            {
+                                Console.WriteLine("--------- CA root certificates --------");
+                                CertificateManager.ShowExistingTrustedRootCertificates();
+                                break;
+                            }
+
+                        case "6":
                             {
                                 Console.WriteLine($"--- Connecting to Mirth: {mirthHostName} ---");
                                 MirthTester.PingMirth(mirthHostName);
@@ -94,7 +130,7 @@ namespace Realtime.Tester
                                 break;
                             }
 
-                        case "4":
+                        case "7":
                             {
                                 Console.WriteLine($"--- Connecting to RabbitMq host: {mirthHostName} ---");
 
@@ -102,7 +138,7 @@ namespace Realtime.Tester
                                 break;
                             }
                             
-                        case "5":
+                        case "8":
                             {
                                 Console.WriteLine($"--- Listening to message from RabbitMq at host: {rabbitMqHostName} ---");
                                 IRabbitMqListener rabbitMqListener = new RabbitMqListener();
@@ -112,11 +148,25 @@ namespace Realtime.Tester
                                 break;
                             }
 
+                        case "9":
+                            {
+                                CertificateManager.RemoveMyCertificates();
+                                break;
+                            }
+
                         default:
                             {
                                 Console.WriteLine($"Invalid choice: {userInput}");
                                 break;
                             }
+                    }
+
+                    if (userInput != "q")
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("(Press any key to go to the menu)");
+                        Console.ReadKey();
+                        Console.Clear();
                     }
                 }
                 while (userInput != "q");
@@ -144,11 +194,15 @@ namespace Realtime.Tester
         {
             Console.WriteLine("----- Tester for Fabric.Realtime ----");
             Console.WriteLine();
-            Console.WriteLine("1: Install Certificate on Local Machine");
-            Console.WriteLine("2: Show Certificates on Local Machine");
-            Console.WriteLine("3: Test Connection to Mirth");
-            Console.WriteLine("4: Test Connection to RabbitMq");
-            Console.WriteLine("5: Send a Test Message to Mirth & Listen on RabbitMq");
+            Console.WriteLine("1: Install Trusted Root Certificate on Local Machine");
+            Console.WriteLine("2: Install Certificate on Local Machine");
+            Console.WriteLine("3: Show Fabric.Realtime Certificates on Local Machine");
+            Console.WriteLine("4: Show Certificates on Local Machine");
+            Console.WriteLine("5: Show Trusted Root Certificates on Local Machine");
+            Console.WriteLine("6: Test Connection to Mirth");
+            Console.WriteLine("7: Test Connection to RabbitMq");
+            Console.WriteLine("8: Send a Test Message to Mirth & Listen on RabbitMq");
+            Console.WriteLine("9: Delete all Fabric.Realtime certificates");
             Console.WriteLine("q: Exit");
             Console.WriteLine();
 

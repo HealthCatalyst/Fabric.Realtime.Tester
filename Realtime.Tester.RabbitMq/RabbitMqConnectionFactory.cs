@@ -25,15 +25,15 @@ namespace Realtime.Tester.RabbitMq
         /// <summary>
         /// The get connection factory.
         /// </summary>
-        /// <param name="rabbitmqhostname">
-        /// The rabbitmqhostname.
+        /// <param name="rabbitMqHostName">
+        /// The rabbitMqHostName.
         /// </param>
         /// <returns>
         /// The <see cref="ConnectionFactory"/>.
         /// </returns>
         /// <exception cref="Exception">exception thrown
         /// </exception>
-        public static ConnectionFactory GetConnectionFactory(string rabbitmqhostname)
+        public static ConnectionFactory GetConnectionFactory(string rabbitMqHostName)
         {
             // from http://blog.johnruiz.com/2011/12/establishing-ssl-connection-to-rabbitmq.html
             // and https://www.rabbitmq.com/ssl.html
@@ -43,10 +43,10 @@ namespace Realtime.Tester.RabbitMq
             ConnectionFactory cf = new ConnectionFactory();
 
             // set the hostname and the port
-            cf.HostName = rabbitmqhostname;
+            cf.HostName = rabbitMqHostName;
             cf.Port = AmqpTcpEndpoint.DefaultAmqpSslPort;
 
-            if (!rabbitmqhostname.Equals("localhost"))
+            if (!rabbitMqHostName.Equals("localhost"))
             {
                 cf.AuthMechanisms = new AuthMechanismFactory[] {new ExternalMechanismFactory()};
 
@@ -59,14 +59,14 @@ namespace Realtime.Tester.RabbitMq
 
                 foreach (X509Certificate2 certificate2 in store.Certificates)
                 {
-                    Debug.WriteLine("Expire:" + certificate2.NotAfter);
-                    Debug.WriteLine($"Issuer:[{certificate2.Issuer}]");
-                    Debug.WriteLine("Effective:" + certificate2.NotBefore);
-                    Debug.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
-                    Debug.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
-                    Debug.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
-                    Debug.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
-                    Debug.WriteLine("-----------------------------------");
+                    Console.WriteLine("Expire:" + certificate2.NotAfter);
+                    Console.WriteLine($"Issuer:[{certificate2.Issuer}]");
+                    Console.WriteLine("Effective:" + certificate2.NotBefore);
+                    Console.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
+                    Console.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
+                    Console.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
+                    Console.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
+                    Console.WriteLine("-----------------------------------");
                 }
 
                 // and find my certificate by its thumbprint.
@@ -107,7 +107,7 @@ namespace Realtime.Tester.RabbitMq
                 cf.Ssl = new SslOption
                 {
                     Enabled = true,
-                    ServerName = rabbitmqhostname,
+                    ServerName = rabbitMqHostName,
                     CertificateValidationCallback = MyValidateServerCertificate,
                     AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch |
                                              SslPolicyErrors.RemoteCertificateChainErrors,
@@ -117,6 +117,7 @@ namespace Realtime.Tester.RabbitMq
             }
             else
             {
+                // ReSharper disable once StringLiteralTypo
                 cf.UserName = "fabricrabbitmquser";
                 cf.Password = "gryxA8wpqk8YU5hy";
             }
@@ -156,9 +157,27 @@ namespace Realtime.Tester.RabbitMq
             // allow the CA to not be present
             if (sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
             {
-                return true;
-            }
+                if (chain.ChainStatus.Length > 0)
+                {
+                    foreach (var chainStatus in chain.ChainStatus)
+                    {
+                        Console.WriteLine("----- Chain Error --------");
+                        Console.WriteLine($"Status: {chainStatus.Status}");
+                        Console.WriteLine($"Status Information: {chainStatus.StatusInformation}");
+                        Console.WriteLine("---------------------------------");
+                    }
 
+                    Console.WriteLine("-------- Chain elements ----------");
+
+                    foreach (var chainElement in chain.ChainElements)
+                    {
+                        Console.WriteLine("-------- Chain element ----------");
+                        Console.WriteLine($"{chainElement.Certificate.Subject}");
+                    }
+
+                    Console.WriteLine("---------------------------------");
+                }
+            }
 
             // Do not allow this client to communicate with unauthenticated servers.
             return false;
