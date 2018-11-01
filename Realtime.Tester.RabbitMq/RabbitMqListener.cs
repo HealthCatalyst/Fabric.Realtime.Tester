@@ -64,7 +64,9 @@ namespace Realtime.Tester.RabbitMq
                     var message = Encoding.UTF8.GetString(body);
                     var routingKey = ea.RoutingKey;
                     myMessage = message;
-                    Console.WriteLine($"Received {routingKey}: {message}");
+                    Console.WriteLine($"--- RabbitMq received message for routing key: {routingKey} ---");
+                    Console.WriteLine(message);
+                    Console.WriteLine("------------------------------------------------");
                     messageReceivedWaitHandle.Set();
                 };
                 var basicConsume = channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);

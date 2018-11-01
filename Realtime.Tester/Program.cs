@@ -89,6 +89,7 @@ namespace Realtime.Tester
                         case "3":
                             {
                                 Console.WriteLine($"--- Connecting to Mirth: {mirthHostName} ---");
+                                MirthTester.PingMirth(mirthHostName);
                                 MirthTester.TestConnection(mirthHostName);
                                 break;
                             }
@@ -147,7 +148,7 @@ namespace Realtime.Tester
             Console.WriteLine("2: Show Certificates on Local Machine");
             Console.WriteLine("3: Test Connection to Mirth");
             Console.WriteLine("4: Test Connection to RabbitMq");
-            Console.WriteLine("5: Send a Test Message & Listen on RabbitMq");
+            Console.WriteLine("5: Send a Test Message to Mirth & Listen on RabbitMq");
             Console.WriteLine("q: Exit");
             Console.WriteLine();
 

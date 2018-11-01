@@ -74,12 +74,43 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
         }
 
         /// <summary>
+        /// The ping mirth.
+        /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool PingMirth(string server)
+        {
+            try
+            {
+                Console.WriteLine($"Pinging {server} on port {MirthPort}");
+
+                using (var client = new TcpClient())
+                {
+                    client.ConnectAsync(server, MirthPort).Wait();
+
+                    Console.WriteLine($"Successfully pinged mirth at {server}");
+                    return true;
+                }
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine("Error pinging host:'" + server + ":" + MirthPort + "'");
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// The test connection.
         /// </summary>
         /// <param name="server">
         /// The server.
         /// </param>
-        /// <exception cref="Exception">
+        /// <exception cref="Exception">exception thrown
         /// </exception>
         public static void TestConnection(string server)
         {
@@ -95,24 +126,24 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             }
         }
 
-            /// <summary>
-            /// The send h l 7.
-            /// </summary>
-            /// <param name="server">
-            /// The server.
-            /// </param>
-            /// <param name="port">
-            /// The port.
-            /// </param>
-            /// <param name="hl7Message">
-            /// The hl 7 message.
-            /// </param>
-            /// <returns>
-            /// The <see cref="bool"/>.
-            /// </returns>
-            /// <exception cref="Exception">exception thrown
-            /// </exception>
-            internal static bool SendHL7(string server, int port, string hl7Message)
+        /// <summary>
+        /// The send h l 7.
+        /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
+        /// <param name="port">
+        /// The port.
+        /// </param>
+        /// <param name="hl7Message">
+        /// The hl 7 message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="Exception">exception thrown
+        /// </exception>
+        internal static bool SendHL7(string server, int port, string hl7Message)
         {
             try
             {
@@ -134,11 +165,13 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                         throw new Exception("Could not connect to Mirth");
                     }
 
+                    Console.WriteLine($"------- Sending HL7 message to {server} -------");
+                    Console.WriteLine(llpHL7Message);
                     Console.WriteLine("---------------------------------");
-                    Console.WriteLine($"Sending HL7 message to {server}");
 
                     // Send message to the server.
                     s.Send(bytesSent, bytesSent.Length, 0);
+
 
                     // Receive the response back
                     int bytes = 0;
@@ -147,11 +180,14 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                     bytes = s.Receive(bytesReceived, bytesReceived.Length, 0);
                     string page = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
 
+                    Console.WriteLine("-------- Response from Mirth -------");
                     Console.Write(page);
+                    Console.WriteLine("---------------------------------");
 
                     // Check to see if it was successful
                     if (page.Contains("MSA|AA"))
                     {
+                        Console.WriteLine("Received valid response from Mirth");
                         return true;
                     }
                     else
@@ -197,7 +233,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
                 var socket = ConnectSocket(address, port);
                 if (socket != null)
                 {
-                    break;
+                    return socket;
                 }
             }
 
