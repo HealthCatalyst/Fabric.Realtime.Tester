@@ -31,53 +31,95 @@ namespace Realtime.Tester
         {
             try
             {
-
                 Console.WriteLine("Realtime tester using .Net Framework 4.6.1");
 
                 // string mirthhostname = "fabricrealtimerabbitmq.eastus.cloudapp.azure.com";
-                string mirthhostname = "fabricrealtime.eastus.cloudapp.azure.com";
-                string certificatepassword;
+                string mirthHostName;
 
                 if (args.Length < 1)
                 {
                     // host was not passed on the command line
-                    Console.WriteLine("Enter host to connect to:");
-                    mirthhostname = Console.ReadLine();
+                    Console.Write("Enter host to connect to: ");
+                    mirthHostName = Console.ReadLine();
                 }
                 else
                 {
-                    mirthhostname = args[0];
+                    mirthHostName = args[0];
                 }
 
-                mirthhostname = mirthhostname?.Trim();
+                mirthHostName = mirthHostName?.Trim();
 
-                if (args.Length < 2)
+                string rabbitMqHostName = mirthHostName;
+
+                string userInput;
+
+                do
                 {
-                    Console.WriteLine("Enter certificate password:");
-                    certificatepassword = Console.ReadLine();
+                    userInput = DisplayMenu();
+
+                    switch (userInput)
+                    {
+                        case "1":
+                            {
+                                string certificatepassword;
+                                if (args.Length < 2)
+                                {
+                                    Console.Write("Enter certificate password: ");
+                                    certificatepassword = Console.ReadLine();
+                                }
+                                else
+                                {
+                                    certificatepassword = args[1];
+                                }
+
+                                certificatepassword = certificatepassword?.Trim();
+
+                                Console.WriteLine("--- Installing SSL client certificate ---");
+
+                                CertificateManager.InstallCertificate(mirthHostName, true, certificatepassword);
+                                break;
+                            }
+
+                        case "2":
+                            {
+                                CertificateManager.ShowExistingCertificates();
+                                break;
+                            }
+
+                        case "3":
+                            {
+                                Console.WriteLine($"--- Connecting to Mirth: {mirthHostName} ---");
+                                MirthTester.TestConnection(mirthHostName);
+                                break;
+                            }
+
+                        case "4":
+                            {
+                                Console.WriteLine($"--- Connecting to RabbitMq host: {mirthHostName} ---");
+
+                                RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitMqHostName);
+                                break;
+                            }
+                            
+                        case "5":
+                            {
+                                Console.WriteLine($"--- Listening to message from RabbitMq at host: {rabbitMqHostName} ---");
+                                IRabbitMqListener rabbitMqListener = new RabbitMqListener();
+
+                                Console.WriteLine($"--- Sending HL7 message to host: {mirthHostName} ---");
+                                MirthTester.TestSendingHL7(mirthHostName, rabbitMqListener);
+                                break;
+                            }
+
+                        default:
+                            {
+                                Console.WriteLine($"Invalid choice: {userInput}");
+                                break;
+                            }
+                    }
                 }
-                else
-                {
-                    certificatepassword = args[1];
-                }
+                while (userInput != "q");
 
-                certificatepassword = certificatepassword?.Trim();
-
-                Console.WriteLine("--- Installing SSL client certificate ---");
-
-                CertificateManager.InstallCertificate(mirthhostname, true, certificatepassword);
-
-                Console.WriteLine($"--- Connecting to rabbitmq host: {mirthhostname} ---");
-
-                string rabbitmqhostname = mirthhostname;
-
-                RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitmqhostname);
-
-                Console.WriteLine($"--- Listening to message from rabbitmq at host: {rabbitmqhostname} ---");
-                IRabbitMqListener rabbitMqListener = new RabbitMqListener();
-
-                Console.WriteLine($"--- Sending HL7 message to host: {mirthhostname} ---");
-                MirthTester.TestSendingHL7(mirthhostname, rabbitMqListener);
             }
             catch (Exception e)
             {
@@ -89,6 +131,29 @@ namespace Realtime.Tester
 
                 Console.ReadLine();
             }
+        }
+
+        /// <summary>
+        /// The display menu.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
+        private static string DisplayMenu()
+        {
+            Console.WriteLine("----- Tester for Fabric.Realtime ----");
+            Console.WriteLine();
+            Console.WriteLine("1: Install Certificate on Local Machine");
+            Console.WriteLine("2: Show Certificates on Local Machine");
+            Console.WriteLine("3: Test Connection to Mirth");
+            Console.WriteLine("4: Test Connection to RabbitMq");
+            Console.WriteLine("5: Send a Test Message & Listen on RabbitMq");
+            Console.WriteLine("q: Exit");
+            Console.WriteLine();
+
+            Console.Write("Please make a selection: ");
+            var result = Console.ReadLine();
+            return result;
         }
     }
 }

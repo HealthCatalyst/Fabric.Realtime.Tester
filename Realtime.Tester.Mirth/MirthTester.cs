@@ -24,6 +24,11 @@ namespace Realtime.Tester.Mirth
     public class MirthTester
     {
         /// <summary>
+        /// The mirth port.
+        /// </summary>
+        protected internal const int MirthPort = 6661;
+
+        /// <summary>
         /// The test sending h l 7.
         /// </summary>
         /// <param name="mirthhostname">
@@ -53,7 +58,7 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
             // wait until the channel/queue has been created otherwise any message we sent will not get to the queue
             channelCreatedWaitHandle.WaitOne();
 
-            var result = SendHL7(mirthhostname, 6661, message);
+            var result = SendHL7(mirthhostname, MirthPort, message);
 
             // wait until the message has been received
             messageReceivedWaitHandle.WaitOne();
@@ -69,23 +74,45 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^";
         }
 
         /// <summary>
-        /// The send h l 7.
+        /// The test connection.
         /// </summary>
         /// <param name="server">
         /// The server.
         /// </param>
-        /// <param name="port">
-        /// The port.
-        /// </param>
-        /// <param name="hl7Message">
-        /// The hl 7 message.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        /// <exception cref="Exception">exception thrown
+        /// <exception cref="Exception">
         /// </exception>
-        internal static bool SendHL7(string server, int port, string hl7Message)
+        public static void TestConnection(string server)
+        {
+            using (Socket s = ConnectSocket(server, MirthPort))
+            {
+                // If the socket could not get a connection, then return false.
+                if (s == null)
+                {
+                    throw new Exception($"Could not connect to Mirth at {server} on port {MirthPort}");
+                }
+
+                Console.WriteLine($"Successfully connected to {server} on port {MirthPort}");
+            }
+        }
+
+            /// <summary>
+            /// The send h l 7.
+            /// </summary>
+            /// <param name="server">
+            /// The server.
+            /// </param>
+            /// <param name="port">
+            /// The port.
+            /// </param>
+            /// <param name="hl7Message">
+            /// The hl 7 message.
+            /// </param>
+            /// <returns>
+            /// The <see cref="bool"/>.
+            /// </returns>
+            /// <exception cref="Exception">exception thrown
+            /// </exception>
+            internal static bool SendHL7(string server, int port, string hl7Message)
         {
             try
             {

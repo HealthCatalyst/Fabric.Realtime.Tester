@@ -10,6 +10,7 @@
 namespace Realtime.Tester.Certificates.Windows
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Net.Http;
@@ -43,7 +44,7 @@ namespace Realtime.Tester.Certificates.Windows
                          $"://{hostname}/certificates/client/fabricrabbitmquser_client_cert.p12";
             byte[] certdata;
 
-            Console.WriteLine($"Download certificate from {url}");
+            Console.WriteLine($"Downloading certificate from {url}");
 
             // disable certificate check for testing
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
@@ -61,7 +62,7 @@ namespace Realtime.Tester.Certificates.Windows
                     if (result.IsSuccessStatusCode)
                     {
                         certdata = result.Content.ReadAsByteArrayAsync().Result;
-                        Console.Write(certdata);
+                        Console.WriteLine($"Successfully downloaded certificate (length={certdata.Length}");
                     }
                     else
                     {
@@ -76,14 +77,61 @@ namespace Realtime.Tester.Certificates.Windows
             }
 
             X509Certificate2 cert = new X509Certificate2(certdata, password);
-            var foo = cert.Subject;
+            Console.WriteLine($"Subject of certificate: {cert.SubjectName.Name}");
+
             X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadWrite);
+
+            var certificatesToRemove = new List<X509Certificate2>();
+
+            foreach (var certificate in store.Certificates)
+            {
+                // ReSharper disable once StringLiteralTypo
+                if (certificate.GetNameInfo(X509NameType.DnsName, false) == "fabricrabbitmquser")
+                {
+                    certificatesToRemove.Add(certificate);
+                }
+            }
+            if (certificatesToRemove.Count != 0)
+            {
+                Console.WriteLine($"Found {certificatesToRemove.Count} existing certificate(s).  Removing them...");
+                certificatesToRemove.ForEach(c => store.Remove(c));
+            }
+
             store.Add(cert); // where cert is an X509Certificate object
             Console.WriteLine("Added cert to LocalMachine store");
 
             string userName = WindowsIdentity.GetCurrent().Name;
             AddAccessToCertificate(cert, userName);
+        }
+
+        /// <summary>
+        /// The show existing certificates.
+        /// </summary>
+        public static void ShowExistingCertificates()
+        {
+            X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            try
+            {
+                store.Open(OpenFlags.ReadWrite);
+
+                foreach (var certificate in store.Certificates)
+                {
+                    Console.WriteLine($"--- Certificate {certificate.FriendlyName}-----");
+                    Console.WriteLine($"Issuer: {certificate.IssuerName.Name}");
+                    Console.WriteLine($"Subject: {certificate.SubjectName.Name}");
+                    Console.WriteLine($"Subject1: {certificate.GetNameInfo(X509NameType.SimpleName, false)}");
+                    Console.WriteLine($"Subject2: {certificate.GetNameInfo(X509NameType.SimpleName, true)}");
+                    Console.WriteLine($"Subject3: {certificate.GetNameInfo(X509NameType.DnsName, false)}");
+                    Console.WriteLine($"Subject4: {certificate.GetNameInfo(X509NameType.DnsName, true)}");
+                    Console.WriteLine($"Effective Date: {certificate.GetEffectiveDateString()}");
+                    Console.WriteLine($"Expiration Date: {certificate.GetExpirationDateString()}");
+                }
+            }
+            finally
+            {
+                store.Close();
+            }
         }
 
         /// <summary>
