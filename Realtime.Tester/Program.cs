@@ -10,6 +10,7 @@
 namespace Realtime.Tester
 {
     using System;
+    using System.Diagnostics;
 
     using Realtime.Interfaces;
     using Realtime.Tester.Certificates.Windows;
@@ -54,151 +55,172 @@ namespace Realtime.Tester
 
                 string rabbitMqHostName = mirthHostName;
 
-                string userInput;
+                string userInput = string.Empty;
 
                 do
                 {
-                    userInput = DisplayMenu();
-
-                    switch (userInput)
+                    try
                     {
-                        case "1":
-                            {
-                                string certificatePassword;
-                                if (args.Length < 2)
+                        userInput = DisplayMenu();
+
+                        switch (userInput)
+                        {
+                            case "1":
                                 {
+                                    string certificatePassword;
+                                    if (args.Length < 2)
+                                    {
+                                        do
+                                        {
+                                            Console.Write("Enter certificate password: (You can get this by typing 'dos' in the kubernetes master VM)");
+                                            certificatePassword = Console.ReadLine();
+                                        }
+                                        while (string.IsNullOrEmpty(certificatePassword));
+                                    }
+                                    else
+                                    {
+                                        certificatePassword = args[1];
+                                    }
+
+                                    certificatePassword = certificatePassword?.Trim();
+
+                                    Console.WriteLine("--- Installing Trusted Root certificate ---");
+                                    CertificateManager.InstallTrustedRootCertificate(mirthHostName, true, certificatePassword, null);
+
+                                    break;
+                                }
+
+                            case "2":
+                                {
+                                    string certificatePassword;
+                                    if (args.Length < 2)
+                                    {
+                                        do
+                                        {
+                                            Console.Write("Enter certificate password: (You can get this by typing 'dos' in the kubernetes master VM)");
+                                            certificatePassword = Console.ReadLine();
+                                        }
+                                        while (string.IsNullOrEmpty(certificatePassword));
+                                    }
+                                    else
+                                    {
+                                        certificatePassword = args[1];
+                                    }
+
+                                    certificatePassword = certificatePassword?.Trim();
+
+                                    Console.WriteLine(
+                                        "Please enter service account name that runs the data processing engine so we can grant it access to the certificate (Leave empty to give access to All Authenticated Users)");
+                                    var serviceAccountName = Console.ReadLine();
+
+                                    Console.WriteLine("--- Installing SSL client certificate ---");
+                                    CertificateManager.InstallClientCertificate(
+                                        mirthHostName,
+                                        true,
+                                        certificatePassword,
+                                        serviceAccountName);
+
+                                    break;
+                                }
+
+                            case "3":
+                                {
+                                    string sqlServer;
                                     do
                                     {
-                                        Console.Write("Enter certificate password: ");
-                                        certificatePassword = Console.ReadLine();
+                                        Console.Write("Sql Server: ");
+                                        sqlServer = Console.ReadLine();
                                     }
-                                    while (string.IsNullOrEmpty(certificatePassword));
+                                    while (string.IsNullOrEmpty(sqlServer));
+
+                                    TestingHelper.SetObjectAttributeBase(sqlServer, mirthHostName);
+                                    break;
                                 }
-                                else
+
+                            case "21":
                                 {
-                                    certificatePassword = args[1];
+                                    CertificateManager.ShowMyCertificates();
+                                    break;
                                 }
 
-                                certificatePassword = certificatePassword?.Trim();
-
-                                Console.WriteLine("--- Installing Trusted Root certificate ---");
-                                CertificateManager.InstallTrustedRootCertificate(mirthHostName, true, certificatePassword, null);
-
-                                break;
-                            }
-
-                        case "2":
-                            {
-                                string certificatePassword;
-                                if (args.Length < 2)
+                            case "22":
                                 {
-                                    do
-                                    {
-                                        Console.Write("Enter certificate password: ");
-                                        certificatePassword = Console.ReadLine();
-                                    }
-                                    while (string.IsNullOrEmpty(certificatePassword));
+                                    Console.WriteLine("-------- Client Certificates ----------");
+                                    CertificateManager.ShowExistingCertificates();
+                                    break;
                                 }
-                                else
+
+                            case "23":
                                 {
-                                    certificatePassword = args[1];
+                                    Console.WriteLine("--------- CA root certificates --------");
+                                    CertificateManager.ShowExistingTrustedRootCertificates();
+                                    break;
                                 }
 
-                                certificatePassword = certificatePassword?.Trim();
-
-                                Console.WriteLine(
-                                    "Please enter service account name that runs the data processing engine so we can grant it access to the certificate (Leave empty to give access to All Authenticated Users)");
-                                var serviceAccountName = Console.ReadLine();
-
-                                Console.WriteLine("--- Installing SSL client certificate ---");
-                                CertificateManager.InstallClientCertificate(
-                                    mirthHostName,
-                                    true,
-                                    certificatePassword,
-                                    serviceAccountName);
-
-                                break;
-                            }
-
-                        case "3":
-                            {
-                                CertificateManager.ShowMyCertificates();
-                                break;
-                            }
-
-                        case "4":
-                            {
-                                Console.WriteLine("-------- Client Certificates ----------");
-                                CertificateManager.ShowExistingCertificates();
-                                break;
-                            }
-
-                        case "5":
-                            {
-                                Console.WriteLine("--------- CA root certificates --------");
-                                CertificateManager.ShowExistingTrustedRootCertificates();
-                                break;
-                            }
-
-                        case "6":
-                            {
-                                Console.WriteLine($"--- Connecting to Mirth: {mirthHostName} ---");
-                                MirthTester.PingMirth(mirthHostName);
-                                MirthTester.TestConnection(mirthHostName);
-                                break;
-                            }
-
-                        case "7":
-                            {
-                                Console.WriteLine($"--- Connecting to RabbitMq host: {mirthHostName} ---");
-
-                                RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitMqHostName);
-                                break;
-                            }
-                            
-                        case "8":
-                            {
-                                Console.WriteLine($"--- Listening to message from RabbitMq at host: {rabbitMqHostName} ---");
-                                IRabbitMqListener rabbitMqListener = new RabbitMqListener();
-
-                                Console.WriteLine($"--- Sending HL7 message to host: {mirthHostName} ---");
-                                MirthTester.TestSendingHL7(mirthHostName, rabbitMqListener);
-                                break;
-                            }
-
-                        case "9":
-                            {
-                                CertificateManager.RemoveMyCertificates();
-                                break;
-                            }
-
-                        case "10":
-                            {
-                                string sqlServer;
-                                do
+                            case "31":
                                 {
-                                    Console.Write("Sql Server: ");
-                                    sqlServer = Console.ReadLine();
+                                    Console.WriteLine($"--- Connecting to Mirth: {mirthHostName} ---");
+                                    MirthTester.PingMirth(mirthHostName);
+                                    MirthTester.TestConnection(mirthHostName);
+                                    break;
                                 }
-                                while (string.IsNullOrEmpty(sqlServer));
 
-                                TestingHelper.SetObjectAttributeBase(sqlServer, mirthHostName);
-                                break;
-                            }
+                            case "32":
+                                {
+                                    Console.WriteLine($"--- Connecting to RabbitMq host: {mirthHostName} ---");
 
-                        default:
-                            {
-                                Console.WriteLine($"Invalid choice: {userInput}");
-                                break;
-                            }
+                                    RabbitMqTester.TestSecureConnectionToRabbitMq(rabbitMqHostName);
+                                    break;
+                                }
+
+                            case "33":
+                                {
+                                    Console.WriteLine($"--- Listening to message from RabbitMq at host: {rabbitMqHostName} ---");
+                                    IRabbitMqListener rabbitMqListener = new RabbitMqListener();
+
+                                    Console.WriteLine($"--- Sending HL7 message to host: {mirthHostName} ---");
+                                    MirthTester.TestSendingHL7(mirthHostName, rabbitMqListener);
+                                    break;
+                                }
+
+                            case "34":
+                                {
+                                    Console.WriteLine("User name and password are available in the kubernetes VM. Just run the dos menu and choose Fabric Realtime Menu");
+                                    Process.Start($"http://{mirthHostName}/rabbitmq");
+                                    break;
+                                }
+
+                            case "35":
+                                {
+                                    Console.WriteLine("User name and password are available in the kubernetes VM. Just run the dos menu and choose Fabric Realtime Menu");
+                                    Process.Start($"http://{mirthHostName}/mirth");
+                                    break;
+                                }
+
+                            case "41":
+                                {
+                                    CertificateManager.RemoveMyCertificates();
+                                    break;
+                                }
+
+                            default:
+                                {
+                                    Console.WriteLine($"Invalid choice: {userInput}");
+                                    break;
+                                }
+                        }
+
+                        if (userInput != "q")
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("(Press any key to go to the menu)");
+                            Console.ReadKey();
+                            Console.Clear();
+                        }
                     }
-
-                    if (userInput != "q")
+                    catch (Exception e)
                     {
-                        Console.WriteLine();
-                        Console.WriteLine("(Press any key to go to the menu)");
-                        Console.ReadKey();
-                        Console.Clear();
+                        Console.WriteLine(e);
                     }
                 }
                 while (userInput != "q");
@@ -227,14 +249,19 @@ namespace Realtime.Tester
             Console.WriteLine();
             Console.WriteLine("1: Install Trusted Root Certificate on Local Machine");
             Console.WriteLine("2: Install Certificate on Local Machine");
-            Console.WriteLine("3: Show Fabric.Realtime Certificates on Local Machine");
-            Console.WriteLine("4: Show Certificates on Local Machine");
-            Console.WriteLine("5: Show Trusted Root Certificates on Local Machine");
-            Console.WriteLine("6: Test Connection to Mirth");
-            Console.WriteLine("7: Test Connection to RabbitMq");
-            Console.WriteLine("8: Send a Test Message to Mirth & Listen on RabbitMq");
-            Console.WriteLine("9: Delete all Fabric.Realtime certificates");
-            Console.WriteLine("10: Configure connection in database");
+            Console.WriteLine("3: Set connection in EdwAdmin database");
+            Console.WriteLine("--------- Troubleshooting --------");
+            Console.WriteLine("21: Show Fabric.Realtime Certificates on Local Machine");
+            Console.WriteLine("22: Show Certificates on Local Machine");
+            Console.WriteLine("23: Show Trusted Root Certificates on Local Machine");
+            Console.WriteLine("------- Testers ----------");
+            Console.WriteLine("31: Test Connection to Mirth");
+            Console.WriteLine("32: Test Connection to RabbitMq");
+            Console.WriteLine("33: Send a Test Message to Mirth & Listen on RabbitMq");
+            Console.WriteLine("34: Open RabbitMq web portal");
+            Console.WriteLine("35: Open Mirth web portal");
+            Console.WriteLine("------- Cleanup ----------");
+            Console.WriteLine("41: Delete all Fabric.Realtime certificates");
             Console.WriteLine("q: Exit");
             Console.WriteLine();
 
