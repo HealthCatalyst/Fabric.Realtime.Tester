@@ -34,6 +34,10 @@ namespace Realtime.Tester
             {
                 Console.WriteLine("Realtime tester using .Net Framework 4.6.1");
 
+                Console.WriteLine("---------------------------------------------------------------------------------------------------------------");
+                Console.WriteLine("NOTE: This tester should be run on the ETL machine so you can install client certificates and test connectivity");
+                Console.WriteLine("---------------------------------------------------------------------------------------------------------------");
+
                 string mirthHostName;
 
                 if (args.Length < 1)
