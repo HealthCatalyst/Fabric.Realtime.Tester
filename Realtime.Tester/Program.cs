@@ -172,6 +172,20 @@ namespace Realtime.Tester
                                 break;
                             }
 
+                        case "10":
+                            {
+                                string sqlServer;
+                                do
+                                {
+                                    Console.Write("Sql Server: ");
+                                    sqlServer = Console.ReadLine();
+                                }
+                                while (string.IsNullOrEmpty(sqlServer));
+
+                                TestingHelper.SetObjectAttributeBase(sqlServer, mirthHostName);
+                                break;
+                            }
+
                         default:
                             {
                                 Console.WriteLine($"Invalid choice: {userInput}");
@@ -188,7 +202,6 @@ namespace Realtime.Tester
                     }
                 }
                 while (userInput != "q");
-
             }
             catch (Exception e)
             {
@@ -221,6 +234,7 @@ namespace Realtime.Tester
             Console.WriteLine("7: Test Connection to RabbitMq");
             Console.WriteLine("8: Send a Test Message to Mirth & Listen on RabbitMq");
             Console.WriteLine("9: Delete all Fabric.Realtime certificates");
+            Console.WriteLine("10: Configure connection in database");
             Console.WriteLine("q: Exit");
             Console.WriteLine();
 
