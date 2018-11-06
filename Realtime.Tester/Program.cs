@@ -35,6 +35,8 @@ namespace Realtime.Tester
             try
             {
                 Console.WriteLine("Realtime tester using .Net Framework 4.6.1");
+                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                Console.WriteLine($"Running as user: {userName}");
 
                 Console.WriteLine("---------------------------------------------------------------------------------------------------------------");
                 Console.WriteLine("NOTE: This tester should be run on the ETL machine so you can install client certificates and test connectivity");
@@ -130,6 +132,13 @@ namespace Realtime.Tester
                                 }
 
                             case "3":
+                                {
+                                    Console.WriteLine("Certificate password is available in the kubernetes VM. Just run the dos menu and choose Fabric Realtime Menu");
+                                    Process.Start($"https://{mirthHostName}/certificates/client/fabricrabbitmquser_client_cert.p12");
+                                    break;
+                                }
+
+                            case "4":
                                 {
                                     string sqlServer;
                                     do
@@ -295,10 +304,13 @@ namespace Realtime.Tester
         private static string DisplayMenu()
         {
             Console.WriteLine("----- Tester for Fabric.Realtime ----");
+            string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            Console.WriteLine($"Running as user: {userName}");
             Console.WriteLine();
             Console.WriteLine("1: Install Trusted Root Certificate on Local Machine");
             Console.WriteLine("2: Install Certificate on Local Machine");
-            Console.WriteLine("3: Set connection in EdwAdmin database");
+            Console.WriteLine("3: Download client certificate");
+            Console.WriteLine("4: Set connection in EdwAdmin database");
             Console.WriteLine("--------- Troubleshooting --------");
             Console.WriteLine("21: Show Fabric.Realtime Certificates on Local Machine");
             Console.WriteLine("22: Show Certificates on Local Machine");

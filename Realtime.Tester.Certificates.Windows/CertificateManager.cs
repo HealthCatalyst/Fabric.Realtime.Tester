@@ -19,6 +19,7 @@ namespace Realtime.Tester.Certificates.Windows
     using System.Security.AccessControl;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
+    using System.Security.Permissions;
     using System.Security.Principal;
 
     /// <summary>
@@ -250,7 +251,8 @@ namespace Realtime.Tester.Certificates.Windows
                 }
             }
 
-            X509Certificate2 newCertificate = new X509Certificate2(certificateData, password);
+            // http://paulstovell.com/blog/x509certificate2
+            X509Certificate2 newCertificate = new X509Certificate2(certificateData, password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
             Console.WriteLine($"Subject of certificate: {newCertificate.SubjectName.Name}");
 
             X509Store store = new X509Store(storeName, StoreLocation.LocalMachine);

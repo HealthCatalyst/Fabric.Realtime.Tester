@@ -57,17 +57,17 @@ namespace Realtime.Tester.RabbitMq
                 X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly);
 
-                foreach (X509Certificate2 certificate2 in store.Certificates)
-                {
-                    Console.WriteLine("Expire:" + certificate2.NotAfter);
-                    Console.WriteLine($"Issuer:[{certificate2.Issuer}]");
-                    Console.WriteLine("Effective:" + certificate2.NotBefore);
-                    Console.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
-                    Console.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
-                    Console.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
-                    Console.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
-                    Console.WriteLine("-----------------------------------");
-                }
+                //foreach (X509Certificate2 certificate2 in store.Certificates)
+                //{
+                //    Console.WriteLine("Expire:" + certificate2.NotAfter);
+                //    Console.WriteLine($"Issuer:[{certificate2.Issuer}]");
+                //    Console.WriteLine("Effective:" + certificate2.NotBefore);
+                //    Console.WriteLine("SimpleName:" + certificate2.GetNameInfo(X509NameType.SimpleName, true));
+                //    Console.WriteLine("HasPrivateKey:" + certificate2.HasPrivateKey);
+                //    Console.WriteLine("SubjectName:" + certificate2.SubjectName.Name);
+                //    Console.WriteLine($"IssuerName:[{certificate2.IssuerName.Name}]");
+                //    Console.WriteLine("-----------------------------------");
+                //}
 
                 // and find my certificate by its thumbprint.
                 var x509Certificate2Collection = store.Certificates
@@ -87,6 +87,14 @@ namespace Realtime.Tester.RabbitMq
                     .OfType<X509Certificate2>()
                     .OrderByDescending(a => a.NotAfter)
                     .First();
+
+                Console.WriteLine("-------- Using Certificate -------");
+                Console.WriteLine("Expire:" + cert.GetExpirationDateString());
+                Console.WriteLine($"Issuer:[{cert.Issuer}]");
+                Console.WriteLine("Effective:" + cert.GetEffectiveDateString());
+                Console.WriteLine("SubjectName:" + cert.Subject);
+                Console.WriteLine($"IssuerName:[{cert.Issuer}]");
+                Console.WriteLine("-----------------------------------");
 
                 //// check that we can access the private key with the user this application is running under
                 //try
