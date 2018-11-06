@@ -17,6 +17,8 @@ namespace Realtime.Tester
     using Realtime.Tester.Mirth;
     using Realtime.Tester.RabbitMq;
 
+    using SimpleImpersonation;
+
     /// <summary>
     /// The program.
     /// </summary>
@@ -189,19 +191,62 @@ namespace Realtime.Tester
 
                             case "34":
                                 {
+                                    string domain;
+                                    do
+                                    {
+                                        Console.Write("Domain: ");
+                                        domain = Console.ReadLine();
+                                    }
+                                    while (string.IsNullOrEmpty(domain));
+
+                                    string username;
+                                    do
+                                    {
+                                        Console.Write("User Name: ");
+                                        username = Console.ReadLine();
+                                    }
+                                    while (string.IsNullOrEmpty(username));
+
+                                    string password;
+                                    do
+                                    {
+                                        Console.Write("Password: ");
+                                        password = Console.ReadLine();
+                                    }
+                                    while (string.IsNullOrEmpty(password));
+
+                                    var credentials = new UserCredentials(domain, username, password);
+                                    var logonType = LogonType.Interactive;
+                                    Impersonation.RunAsUser(
+                                        credentials,
+                                        logonType,
+                                        () =>
+                                            {
+                                                Console.WriteLine($"--- Listening to message from RabbitMq at host: {rabbitMqHostName} ---");
+                                                IRabbitMqListener rabbitMqListener = new RabbitMqListener();
+
+                                                Console.WriteLine($"--- Sending HL7 message to host: {mirthHostName} ---");
+                                                MirthTester.TestSendingHL7(mirthHostName, rabbitMqListener);
+                                        });
+
+                                    break;
+                                }
+
+                            case "41":
+                                {
                                     Console.WriteLine("User name and password are available in the kubernetes VM. Just run the dos menu and choose Fabric Realtime Menu");
                                     Process.Start($"http://{mirthHostName}/rabbitmq");
                                     break;
                                 }
 
-                            case "35":
+                            case "42":
                                 {
                                     Console.WriteLine("User name and password are available in the kubernetes VM. Just run the dos menu and choose Fabric Realtime Menu");
                                     Process.Start($"http://{mirthHostName}/mirth");
                                     break;
                                 }
 
-                            case "41":
+                            case "51":
                                 {
                                     CertificateManager.RemoveMyCertificates();
                                     break;
@@ -262,10 +307,12 @@ namespace Realtime.Tester
             Console.WriteLine("31: Test Connection to Mirth");
             Console.WriteLine("32: Test Connection to RabbitMq");
             Console.WriteLine("33: Send a Test Message to Mirth & Listen on RabbitMq");
-            Console.WriteLine("34: Open RabbitMq web portal");
-            Console.WriteLine("35: Open Mirth web portal");
+            Console.WriteLine("34: Send a Test Message to Mirth & Listen on RabbitMq (Different user)");
+            Console.WriteLine("------- web portals ----------");
+            Console.WriteLine("41: Open RabbitMq web portal");
+            Console.WriteLine("42: Open Mirth web portal");
             Console.WriteLine("------- Cleanup ----------");
-            Console.WriteLine("41: Delete all Fabric.Realtime certificates");
+            Console.WriteLine("51: Delete all Fabric.Realtime certificates");
             Console.WriteLine("q: Exit");
             Console.WriteLine();
 
