@@ -12,14 +12,12 @@ namespace Realtime.Tester.Certificates.Windows
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Security;
     using System.Security.AccessControl;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
-    using System.Security.Permissions;
     using System.Security.Principal;
 
     /// <summary>
@@ -50,7 +48,8 @@ namespace Realtime.Tester.Certificates.Windows
         {
             string url = (ssl ? "https" : "http") + string.Empty
                                                   // ReSharper disable once StringLiteralTypo
-                                                  + $"://{hostname}/certificates/client/fabricrabbitmquser_client_cert.p12";
+                                                  + $"://{hostname}/certificates/client/fabricrabbitmquser_client_cert.p12"
+                                                   + $"?p={GetCurrentTimeAsUnixEpoch()}";
 
             InternalInstallCertificate(StoreName.My, url, password, serviceAccountToGrantAccess, true);
         }
@@ -77,7 +76,8 @@ namespace Realtime.Tester.Certificates.Windows
             string serviceAccountToGrantAccess)
         {
             string url = (ssl ? "https" : "http") + string.Empty
-                                                  + $"://{hostname}/certificates/client/fabric_ca_cert.p12";
+                                                  + $"://{hostname}/certificates/client/fabric_ca_cert.p12"
+                                                  + $"?p={GetCurrentTimeAsUnixEpoch()}";
 
             InternalInstallCertificate(StoreName.Root, url, password, serviceAccountToGrantAccess, false);
         }
@@ -128,6 +128,34 @@ namespace Realtime.Tester.Certificates.Windows
             store.Open(OpenFlags.ReadWrite);
             RemoveCertificatesWithSubjectName(store, subjectForRootCertificate);
             store.Close();
+        }
+
+        /// <summary>
+        /// The get current time as unix epoch.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="double"/>.
+        /// </returns>
+        private static double GetCurrentTimeAsUnixEpoch()
+        {
+            return GetUnixEpoch(DateTime.Now);
+        }
+
+        /// <summary>
+        /// The get unix epoch.
+        /// </summary>
+        /// <param name="dateTime">
+        /// The date time.
+        /// </param>
+        /// <returns>
+        /// The <see cref="double"/>.
+        /// </returns>
+        private static double GetUnixEpoch(DateTime dateTime)
+        {
+            var unixTime = dateTime.ToUniversalTime() -
+                           new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            return unixTime.TotalSeconds;
         }
 
         /// <summary>
